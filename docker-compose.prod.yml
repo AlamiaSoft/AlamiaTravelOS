@@ -19,9 +19,9 @@ services:
       - USER=${DB_USER:-odoo}
       - PASSWORD=${DB_PASSWORD:-odoo}
     volumes:
-      - ./config/odoo.conf:/etc/odoo/odoo.conf:ro
-      - ./custom_addons:/mnt/extra-addons
-      - ./third_party_addons:/mnt/third-party-addons
+      - odoo-config:/etc/odoo/odoo.conf:ro
+      - custom-addons:/mnt/extra-addons
+      - third-party-addons:/mnt/third-party-addons
       - odoo-web-data:/var/lib/odoo
     restart: always
     networks:
@@ -73,3 +73,8 @@ networks:
   odoo-prod-network:
     name: alamiatravelos_prod_network
     driver: bridge
+
+volumes:
+  odoo-config:
+  custom-addons:
+  third-party-addons:
