@@ -1,50 +1,31 @@
 # Current State — AlamiaTravelOS
 
 ## Project Status
-AlamiaTravelOS is an active Odoo 19 Docker project with the following status as of current sprint:
+AlamiaTravelOS is an active Odoo 19 Docker project with all core sprints, historical data migration, and VPS deployment configurations complete.
 
-### Completed Sprints & Modules
+### Completed This Session
 
-1. **Sprint 0 — Infrastructure & Dev Environment**
-   - Hot-reloading Odoo 19 Docker setup (`docker-compose.yml`) with PostgreSQL 17.
-   - MCP Server third-party addon enabled with API key auth (`setup_mcp.py`).
+1. **Consolidated Historical Data Migration (`ledger sheet KAMAL EXPRESS (1).xlsx`)**
+   - Clean DB reset and complete import of consolidated sheets:
+     - **165 Travel Sales** (Rs. 17,896,531.00 total sales, Rs. 7,517,528.00 vendor cost, Rs. 10,379,003.00 profit).
+     - **140 Office Expense Bills** (Rs. 2,255,156.00 total expenses).
+     - **36 Partner Settlements** (Rs. 3,426,492.00 capital advances, drawings, and settlements).
+     - **144 Customers** & **62 Suppliers** created and tagged.
 
-2. **Sprint 1 — Core Master Data & Security (`alamia_travel_core`)**
-   - Core `travel.service.catalog` model for travel services.
-   - Extended `res.partner` with travel flags (`is_travel_customer`, `is_travel_supplier`).
-   - Root menu structure and foundational security groups (`group_travel_ops`, `group_travel_sales`, `group_travel_manager`, `group_travel_admin`).
+2. **Partner Settlements Model & Views (`travel.partner.settlement`)**
+   - Created model in `alamia_travel_finance` for partner capital transactions & settlements.
+   - List, form views with chatter, sequence `SETTLE/%(year)s/`, security ACLs, and menu item.
 
-3. **Sprint 2 — Sales Engine (`alamia_travel_sales`)**
-   - `travel.sale` model with auto-sequence `KE-YYYY-XXXXX`, lifecycle (`draft` → `confirmed` → `in_progress` → `completed` / `cancelled`), and `mail.thread` chatter.
-   - `travel.sale.line` with positive price/cost constraints, audit trail write-guard, and `mail.thread` tracking.
+3. **UI Fixes & Form Enhancements**
+   - Fixed `travel.sale` form view chatter (`<chatter/>` tag for Odoo 19).
+   - Added automatic fallback to default Income and Expense accounts when creating Invoices & Vendor Bills.
 
-4. **Sprint 3 & 4 — Finance Integration (`alamia_travel_finance`)**
-   - Extended `account.move` with `travel_sale_id` link.
-   - Buttons on `travel.sale` to generate Customer Invoices & Vendor Bills.
-   - Computed `payment_status` (`unpaid`, `partial`, `paid`, `overpaid`).
+4. **Non-Technical Excel Data Import UI Wizard (`travel.data.import.wizard`)**
+   - Created UI wizard in `Travel OS -> Excel Data Import` allowing non-technical staff to upload `.xlsx` workbooks directly in the web UI.
 
-5. **Sprint 5 & Dashboards — Reporting (`alamia_travel_reporting`)**
-   - Single `travel.dashboard` AbstractModel backend service serving role-gated data (CEO, Ops, Sales, Ops/Marketing).
-   - OWL Component client action (`travel_dashboard_client_action`) with QWeb templates and SCSS styling.
-   - Reporting menus and role-specific client actions.
-
-6. **Sprint 7 — Golden Scenario Automated Tests**
-   - 5 golden integration scenario tests in `custom_addons/alamia_travel_finance/tests/test_golden_scenarios.py` (100% PASS).
-
-7. **Kamal Express Users, Roles & Dashboards**
-   - 5 Users provisioned (`kamal`, `jawad`, `ali`, `tayyab`, `zeeshan`) with secure password reset mechanism.
-   - 5 Role Groups in `security.xml` with implied permissions.
-   - 18/18 Automated permission & dashboard security tests passing (`test_users_roles_and_dashboards.py`).
-
-8. **Audit Trail Hardening**
-   - Added `mail.thread` and field tracking on `travel.sale.line`.
-   - Write-guard on `travel.sale.line` preventing silent edits to financial fields when sale state is `completed` or `cancelled`.
-
-9. **VPS Deployment via Portainer (`docker-compose.prod.yml` & `Dockerfile`)**
-   - Fixed missing PostgreSQL environment variables (`POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB`).
-   - Fixed healthcheck command target from `-d alamiatravelos` to `-d ${DB_NAME:-postgres}` (fixing container startup dependency failure).
-   - Updated `Dockerfile` to package custom addons & configuration into image.
-   - Changes committed & pushed to GitHub `main` branch.
+5. **Git & Build Fixes**
+   - Fixed `.gitignore` wildcard `data/` rule to ensure Odoo module `data/*.xml` files (`users_data.xml`) are tracked in git.
+   - All code, migrations, and fixes committed and pushed to GitHub `main` (`296b2e1`, `adde10a`, `1ed0bcc`, `296b2e1`).
 
 ---
 
@@ -55,8 +36,9 @@ AlamiaTravelOS is an active Odoo 19 Docker project with the following status as 
 
 ---
 
-## Key Metrics
-- **Modules Implemented**: 4 custom modules (`alamia_travel_core`, `alamia_travel_sales`, `alamia_travel_finance`, `alamia_travel_reporting`).
-- **Automated Tests**: 23 total unit/integration tests (5 Golden Scenarios + 18 Permission/Dashboard tests) — ALL PASS.
-- **Provisioned Users**: 5 Kamal Express roles.
-- **Git Branch**: `main` (clean, fully pushed).
+## Next Session Focus Items (User Requested)
+1. **Default Login Landing Page**: Set TravelOS Dashboard as the default web landing page after login (replacing default Discuss app).
+2. **Expenses Management Screens**: Dedicated views for Office Expenses, Categories, Payees, and Expense Approvals.
+3. **Services / Products / Subscriptions Management Screens**: Expanded catalog management for travel services, package subscriptions, and service pricing tiers.
+4. **Sub-Agents & Partners Management Screens**: Comprehensive Partner & Sub-Agent views, commission tracking, and partner settlement ledgers.
+5. **Advanced Accounting & Finance Features**: Aged Receivables/Payables, Financial Statements, Journal Entries, and Cash/Bank Position tracking.

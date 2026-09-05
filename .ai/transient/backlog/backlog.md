@@ -1,32 +1,25 @@
-# Backlog — Pending Tasks
+# Backlog — Pending Tasks & Next Sprint Objectives
 
-## Priority: High
+## Immediate Next Sprint Objectives (User Requested)
 
-- [ ] Execute Task-1 in Odoo MCP: inspect existing service categories and products, extract raw Excel labels from Kamal Express workbook
-- [ ] Execute Task-2 in Odoo MCP: create missing canonical services/categories, verify no duplicates, produce verification report
-- [ ] Populate `.ai/transient/sprint/01-next-state.md` after Task-1 completion
-- [ ] Set up production VPS with Nginx + Let's Encrypt SSL for `travelos.yourcompany.com`
+- [ ] **Default Login Landing Page**: Configure TravelOS Executive/Role Dashboard as default landing app after login (replacing default Discuss app).
+- [ ] **Expenses Management Screens**: Dedicated views for Office Expenses, Categories, Payees, and Expense Approvals.
+- [ ] **Services / Products / Subscriptions Management Screens**: Expanded catalog management for travel services, package subscriptions, and service pricing tiers.
+- [ ] **Sub-Agents & Partners Management Screens**: Comprehensive Partner & Sub-Agent views, commission tracking, and partner settlement ledgers.
+- [ ] **Advanced Accounting & Finance Features**: Aged Receivables/Payables, Financial Statements, Journal Entries, and Cash/Bank Position tracking.
+
+---
 
 ## Priority: Medium
 
-- [ ] Populate remaining ADRs (ACP Server auth design, incremental migration pattern)
-- [ ] Create `.ai/transient/handoffs/` session summaries
-- [ ] Document Kamal Express Excel workbook structure in `docs/kamal-express/`
-- [ ] Verify `scripts/backup.sh` cron job runs correctly on VPS
-- [ ] Test Odoo chat WebSocket passthrough (port 8072) behind Nginx in production
+- [ ] Verify production deployment on VPS (`travels.alamiaconnect.com`) via Portainer.
+- [ ] Test Odoo chat WebSocket passthrough (port 8072) behind Nginx/Cloudflare Tunnel in production.
+- [ ] Document MCP server rate limiting thresholds and tuning.
+- [ ] Verify `scripts/backup.sh` cron job runs correctly on VPS.
+
+---
 
 ## Priority: Low
 
-- [ ] Update `.ai/permanent/architecture/01-system-architecture.md` with any new architectural discoveries
-- [ ] Add more glossary terms as project terminology expands
-- [ ] Document MCP server rate limiting thresholds and tuning
-- [ ] Create `.ai/history/` timeline entries for sprint-by-sprint changes
-- [ ] Write `.ai/lessons/` entries for debugging outcomes and failed experiments
-
-## Future Considerations
-
-- [ ] Evaluate Odoo 19 Community vs Enterprise feature gaps for travel use case
-- [ ] Consider containerizing Nginx (currently host-level only) for full Docker Compose parity
-- [ ] Evaluate switching to MariaDB if PostgreSQL compatibility issues arise
-- [ ] Review Odoo proxy_mode implications for WebSocket support
-- [ ] Document scaling considerations (multiple web containers behind load balancer)
+- [ ] Populate remaining ADRs for architectural decisions.
+- [ ] Document scaling considerations (multiple web containers behind load balancer).
