@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Sequence -->
+        <record id="seq_travel_partner_settlement" model="ir.sequence">
+            <field name="name">Partner Settlement Sequence</field>
+            <field name="code">travel.partner.settlement</field>
+            <field name="prefix">SETTLE/%(year)s/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- List View -->
+        <record id="view_travel_partner_settlement_list" model="ir.ui.view">
+            <field name="name">travel.partner.settlement.list</field>
+            <field name="model">travel.partner.settlement</field>
+            <field name="arch" type="xml">
+                <list string="Partner Settlements">
+                    <field name="name"/>
+                    <field name="date"/>
+                    <field name="partner_id"/>
+                    <field name="settlement_type"/>
+                    <field name="amount" widget="monetary"/>
+                    <field name="state" widget="badge"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Form View -->
+        <record id="view_travel_partner_settlement_form" model="ir.ui.view">
+            <field name="name">travel.partner.settlement.form</field>
+            <field name="model">travel.partner.settlement</field>
+            <field name="arch" type="xml">
+                <form string="Partner Settlement">
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,posted,cancelled"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" readonly="1"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="partner_id"/>
+                                <field name="settlement_type"/>
+                                <field name="amount"/>
+                            </group>
+                            <group>
+                                <field name="date"/>
+                                <field name="company_id" groups="base.group_multi_company"/>
+                                <field name="currency_id" invisible="1"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Notes &amp; References" name="notes">
+                                <field name="notes" placeholder="Notes, reference details, payment methods..."/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action -->
+        <record id="action_travel_partner_settlement" model="ir.actions.act_window">
+            <field name="name">Partner Settlements</field>
+            <field name="res_model">travel.partner.settlement</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create your first Partner Settlement or Capital Transaction!
+                </p>
+            </field>
+        </record>
+
+        <!-- Menu Item -->
+        <menuitem id="menu_travel_partner_settlement"
+                  name="Partner Settlements"
+                  parent="alamia_travel_core.menu_travel_os_root"
+                  action="action_travel_partner_settlement"
+                  sequence="35"/>
+    </data>
+</odoo>

@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_travel_partner_settlement_user,travel.partner.settlement.user,model_travel_partner_settlement,base.group_user,1,0,0,0
+access_travel_partner_settlement_sales,travel.partner.settlement.sales,model_travel_partner_settlement,alamia_travel_core.group_travel_sales,1,1,1,0
+access_travel_partner_settlement_manager,travel.partner.settlement.manager,model_travel_partner_settlement,alamia_travel_core.group_travel_manager,1,1,1,1
+access_travel_partner_settlement_admin,travel.partner.settlement.admin,model_travel_partner_settlement,alamia_travel_core.group_travel_admin,1,1,1,1

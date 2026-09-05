@@ -1,0 +1,40 @@
+2026-09-05 13:20:52,836 1 WARNING ? odoo.tools.config: missing --http-interface/http_interface, using 0.0.0.0 by default, will change to 127.0.0.1 in 20.0 
+2026-09-05 13:20:52,836 1 INFO ? odoo: Odoo version 19.0-20260817 
+2026-09-05 13:20:52,837 1 INFO ? odoo: Using configuration file at /etc/odoo/odoo.conf 
+2026-09-05 13:20:52,837 1 INFO ? odoo: addons paths: _NamespacePath(['/usr/lib/python3/dist-packages/odoo/addons', '/var/lib/odoo/addons/19.0', '/mnt/extra-addons', '/mnt/third-party-addons', '/usr/lib/python3/dist-packages/addons']) 
+2026-09-05 13:20:52,837 1 INFO ? odoo: database: odoo@db:5432 
+2026-09-05 13:20:53,490 1 INFO ? odoo.service.server: Watching addons folder /usr/lib/python3/dist-packages/odoo/addons 
+2026-09-05 13:20:53,491 1 INFO ? odoo.service.server: Watching addons folder /var/lib/odoo/addons/19.0 
+2026-09-05 13:20:53,491 1 INFO ? odoo.service.server: Watching addons folder /mnt/extra-addons 
+2026-09-05 13:20:53,491 1 INFO ? odoo.service.server: Watching addons folder /mnt/third-party-addons 
+2026-09-05 13:20:53,491 1 INFO ? odoo.service.server: Watching addons folder /usr/lib/python3/dist-packages/addons 
+2026-09-05 13:20:55,470 1 INFO ? odoo.service.server: AutoReload watcher running with watchdog 
+2026-09-05 13:20:55,471 1 INFO ? odoo.service.server: HTTP service (werkzeug) running on 349121342c3c:8069 
+2026-09-05 13:20:55,750 1 ERROR alamiatravelos odoo.modules.loading: Database alamiatravelos not initialized, you can force it with `-i base` 
+2026-09-05 13:20:55,751 1 INFO alamiatravelos odoo.registry: Registry loaded in 0.277s 
+2026-09-05 13:21:20,459 1 ERROR alamiatravelos odoo.http: Exception during request handling. 
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/odoo/http.py", line 2856, in __call__
+    response = request._serve_db()
+               ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/odoo/http.py", line 2285, in _serve_db
+    rule, args = self.registry['ir.http']._match(self.httprequest.path)
+                 ~~~~~~~~~~~~~^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/odoo/orm/registry.py", line 344, in __getitem__
+    return self.models[model_name]
+           ~~~~~~~~~~~^^^^^^^^^^^^
+KeyError: 'ir.http'
+2026-09-05 13:21:20,464 1 INFO alamiatravelos werkzeug: 192.168.0.1 - - [05/Sep/2026 13:21:20] "GET / HTTP/1.1" 500 - 2 0.030 0.050
+2026-09-05 13:21:21,686 1 ERROR alamiatravelos odoo.http: Exception during request handling. 
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/odoo/http.py", line 2856, in __call__
+    response = request._serve_db()
+               ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/odoo/http.py", line 2285, in _serve_db
+    rule, args = self.registry['ir.http']._match(self.httprequest.path)
+                 ~~~~~~~~~~~~~^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/odoo/orm/registry.py", line 344, in __getitem__
+    return self.models[model_name]
+           ~~~~~~~~~~~^^^^^^^^^^^^
+KeyError: 'ir.http'
+2026-09-05 13:21:21,688 1 INFO alamiatravelos werkzeug: 192.168.0.1 - - [05/Sep/2026 13:21:21] "GET /favicon.ico HTTP/1.1" 500 - 2 0.017 0.043
