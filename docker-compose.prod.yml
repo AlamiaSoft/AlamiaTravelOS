@@ -23,9 +23,6 @@ services:
       - USER=${DB_USER:-odoo}
       - PASSWORD=${DB_PASSWORD:-odoo}
     volumes:
-      - ./config/odoo.conf:/etc/odoo/odoo.conf:ro
-      - ./custom_addons:/mnt/extra-addons
-      - ./third_party_addons:/mnt/third-party-addons
       - odoo-web-data:/var/lib/odoo
     restart: always
     networks:
