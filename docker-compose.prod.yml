@@ -28,13 +28,13 @@ services:
     networks:
       - odoo-prod-network
 
-  db:
+db:
     image: postgres:${POSTGRES_VERSION:-17-alpine}
     container_name: alamiatravelos_db_prod
     environment:
-      POSTGRES_DB: ${DB_NAME}
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: alamiatravelos
+      POSTGRES_USER: odoo
+      POSTGRES_PASSWORD: odoo
       PGDATA: /var/lib/postgresql/data/pgdata
     volumes:
       - odoo-db-data:/var/lib/postgresql/data/pgdata
