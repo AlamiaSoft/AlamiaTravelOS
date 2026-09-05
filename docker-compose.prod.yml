@@ -10,6 +10,8 @@ services:
       - "--dev=reload,xml"
       - "-d"
       - "alamiatravelos"
+      - "-i"
+      - "base,alamia_travel_core,alamia_travel_sales,alamia_travel_finance,alamia_travel_reporting,mcp_server"
       - "--db-filter=^alamiatravelos$$"
     depends_on:
       db:
