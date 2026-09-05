@@ -1,0 +1,432 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="alamia_travel_reporting.TravelDashboard">
+        <div class="o_travel_dashboard o_action p-4">
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom bg-white p-3 rounded shadow-sm">
+                <div>
+                    <h2 class="mb-1 text-primary fw-bold">
+                        <i class="fa fa-tachometer me-2"/> <t t-esc="roleTitle"/>
+                    </h2>
+                    <p class="text-muted mb-0 small">
+                        Welcome, <span class="fw-semibold text-dark"><t t-esc="state.data.user_name"/></span> | Real-time Operations &amp; Financial Control
+                    </p>
+                </div>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-primary btn-sm" t-on-click="loadDashboardData">
+                        <i class="fa fa-refresh me-1"/> Refresh
+                    </button>
+                    <button class="btn btn-primary btn-sm" t-on-click="() => this.openSales([], 'All Travel Sales')">
+                        <i class="fa fa-plane me-1"/> All Sales
+                    </button>
+                </div>
+            </div>
+
+            <!-- Loading Spinner -->
+            <div t-if="state.loading" class="text-center py-5">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mt-2 text-muted">Calculating financial metrics...</p>
+            </div>
+
+            <div t-else="">
+                <!-- KPI GRID - CEO VIEW -->
+                <div t-if="state.data.role === 'ceo'" class="row g-3 mb-4">
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="card shadow-sm border-0 border-start border-4 border-primary h-100 kpi-card" t-on-click="() => this.openSales([['date_sale', '=', new Date().toISOString().split('T')[0]]], 'Today Sales')">
+                            <div class="card-body">
+                                <span class="text-muted small text-uppercase fw-bold">Today's Sales</span>
+                                <h3 class="mb-0 mt-2 fw-bold text-dark">
+                                    <t t-esc="state.data.currency_symbol"/> <t t-esc="formatCurrency(state.data.kpis.today_sales)"/>
+                                </h3>
+                                <small class="text-muted"><t t-esc="state.data.kpis.today_sales_count || 0"/> bookings today</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="card shadow-sm border-0 border-start border-4 border-success h-100 kpi-card" t-on-click="() => this.openInvoices([], 'Collections &amp; Invoices')">
+                            <div class="card-body">
+                                <span class="text-muted small text-uppercase fw-bold">Today's Collections</span>
+                                <h3 class="mb-0 mt-2 fw-bold text-success">
+                                    <t t-esc="state.data.currency_symbol"/> <t t-esc="formatCurrency(state.data.kpis.today_collections)"/>
+                                </h3>
+                                <small class="text-muted">Cash &amp; Bank Inflow</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="card shadow-sm border-0 border-start border-4 border-info h-100 kpi-card" t-on-click="() => this.openSales([], 'Monthly Sales')">
+                            <div class="card-body">
+                                <span class="text-muted small text-uppercase fw-bold">Monthly Sales</span>
+                                <h3 class="mb-0 mt-2 fw-bold text-info">
+                                    <t t-esc="state.data.currency_symbol"/> <t t-esc="formatCurrency(state.data.kpis.monthly_sales)"/>
+                                </h3>
+                                <small class="text-muted"><t t-esc="state.data.kpis.monthly_sales_count || 0"/> monthly bookings</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="card shadow-sm border-0 border-start border-4 border-warning h-100 kpi-card">
+                            <div class="card-body">
+                                <span class="text-muted small text-uppercase fw-bold">Monthly Gross Profit</span>
+                                <h3 class="mb-0 mt-2 fw-bold text-warning">
+                                    <t t-esc="state.data.currency_symbol"/> <t t-esc="formatCurrency(state.data.kpis.monthly_gross_profit)"/>
+                                </h3>
+                                <small class="text-muted">Revenue minus Supplier Costs</small>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Financial Balance KPIs -->
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="card shadow-sm border-0 border-start border-4 border-danger h-100 kpi-card" t-on-click="() => this.openInvoices([['amount_residual', '>', 0], ['move_type', '=', 'out_invoice']], 'Total Receivables')">
+                            <div class="card-body">
+                                <span class="text-muted small text-uppercase fw-bold">Total Receivables</span>
+                                <h3 class="mb-0 mt-2 fw-bold text-danger">
+                                    <t t-esc="state.data.currency_symbol"/> <t t-esc="formatCurrency(state.data.kpis.total_receivables)"/>
+                                </h3>
+                                <small class="text-muted">Customer Outstanding</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="card shadow-sm border-0 border-start border-4 border-secondary h-100 kpi-card" t-on-click="() => this.openBills([['amount_residual', '>', 0], ['move_type', '=', 'in_invoice']], 'Total Payables')">
+                            <div class="card-body">
+                                <span class="text-muted small text-uppercase fw-bold">Total Payables</span>
+                                <h3 class="mb-0 mt-2 fw-bold text-secondary">
+                                    <t t-esc="state.data.currency_symbol"/> <t t-esc="formatCurrency(state.data.kpis.total_payables)"/>
+                                </h3>
+                                <small class="text-muted">Supplier Balances</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="card shadow-sm border-0 border-start border-4 border-primary h-100 kpi-card">
+                            <div class="card-body">
+                                <span class="text-muted small text-uppercase fw-bold">Cash Position</span>
+                                <h3 class="mb-0 mt-2 fw-bold text-dark">
+                                    <t t-esc="state.data.currency_symbol"/> <t t-esc="formatCurrency(state.data.kpis.cash_position)"/>
+                                </h3>
+                                <small class="text-muted">Cash in Hand / Drawer</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="card shadow-sm border-0 border-start border-4 border-success h-100 kpi-card">
+                            <div class="card-body">
+                                <span class="text-muted small text-uppercase fw-bold">Bank Position</span>
+                                <h3 class="mb-0 mt-2 fw-bold text-dark">
+                                    <t t-esc="state.data.currency_symbol"/> <t t-esc="formatCurrency(state.data.kpis.bank_position)"/>
+                                </h3>
+                                <small class="text-muted">Bank Accounts Total</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- KPI GRID - OPERATIONS DIRECTOR VIEW -->
+                <div t-elif="state.data.role === 'operations'" class="row g-3 mb-4">
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="card shadow-sm border-0 border-start border-4 border-primary h-100 kpi-card" t-on-click="() => this.openSales([], 'Today Sales')">
+                            <div class="card-body">
+                                <span class="text-muted small text-uppercase fw-bold">Today's Sales</span>
+                                <h3 class="mb-0 mt-2 fw-bold text-dark">
+                                    <t t-esc="state.data.currency_symbol"/> <t t-esc="formatCurrency(state.data.kpis.today_sales)"/>
+                                </h3>
+                                <small class="text-muted"><t t-esc="state.data.kpis.today_sales_count || 0"/> bookings</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="card shadow-sm border-0 border-start border-4 border-success h-100 kpi-card">
+                            <div class="card-body">
+                                <span class="text-muted small text-uppercase fw-bold">Today's Collections</span>
+                                <h3 class="mb-0 mt-2 fw-bold text-success">
+                                    <t t-esc="state.data.currency_symbol"/> <t t-esc="formatCurrency(state.data.kpis.today_collections)"/>
+                                </h3>
+                                <small class="text-muted">Collected today</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="card shadow-sm border-0 border-start border-4 border-warning h-100 kpi-card" t-on-click="() => this.openSales([['state', 'in', ['draft', 'confirmed', 'in_progress']]], 'Pending Transactions')">
+                            <div class="card-body">
+                                <span class="text-muted small text-uppercase fw-bold">Pending Transactions</span>
+                                <h3 class="mb-0 mt-2 fw-bold text-warning">
+                                    <t t-esc="state.data.kpis.pending_transactions_count"/>
+                                </h3>
+                                <small class="text-muted">Draft / Confirmed / In Progress</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="card shadow-sm border-0 border-start border-4 border-danger h-100 kpi-card" t-on-click="() => this.openInvoices([['amount_residual', '>', 0]], 'Customer Balances')">
+                            <div class="card-body">
+                                <span class="text-muted small text-uppercase fw-bold">Customer Outstanding</span>
+                                <h3 class="mb-0 mt-2 fw-bold text-danger">
+                                    <t t-esc="state.data.currency_symbol"/> <t t-esc="formatCurrency(state.data.kpis.total_receivables)"/>
+                                </h3>
+                                <small class="text-muted">Total Customer Receivables</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <div class="card shadow-sm border-0 border-start border-4 border-secondary h-100 kpi-card" t-on-click="() => this.openBills([['amount_residual', '>', 0]], 'Supplier Payables')">
+                            <div class="card-body">
+                                <span class="text-muted small text-uppercase fw-bold">Supplier Payables</span>
+                                <h3 class="mb-0 mt-2 fw-bold text-secondary">
+                                    <t t-esc="state.data.currency_symbol"/> <t t-esc="formatCurrency(state.data.kpis.total_payables)"/>
+                                </h3>
+                                <small class="text-muted">Payable to Vendors</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- KPI GRID - SALES DIRECTOR VIEW -->
+                <div t-elif="state.data.role === 'sales'" class="row g-3 mb-4">
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="card shadow-sm border-0 border-start border-4 border-primary h-100 kpi-card" t-on-click="() => this.openSales([], 'Today Sales')">
+                            <div class="card-body">
+                                <span class="text-muted small text-uppercase fw-bold">Today's Sales</span>
+                                <h3 class="mb-0 mt-2 fw-bold text-dark">
+                                    <t t-esc="state.data.currency_symbol"/> <t t-esc="formatCurrency(state.data.kpis.today_sales)"/>
+                                </h3>
+                                <small class="text-muted">Total Team Volume</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="card shadow-sm border-0 border-start border-4 border-info h-100 kpi-card">
+                            <div class="card-body">
+                                <span class="text-muted small text-uppercase fw-bold">Monthly Sales</span>
+                                <h3 class="mb-0 mt-2 fw-bold text-info">
+                                    <t t-esc="state.data.currency_symbol"/> <t t-esc="formatCurrency(state.data.kpis.monthly_sales)"/>
+                                </h3>
+                                <small class="text-muted">Month to date</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="card shadow-sm border-0 border-start border-4 border-success h-100 kpi-card">
+                            <div class="card-body">
+                                <span class="text-muted small text-uppercase fw-bold">My Monthly Sales</span>
+                                <h3 class="mb-0 mt-2 fw-bold text-success">
+                                    <t t-esc="state.data.currency_symbol"/> <t t-esc="formatCurrency(state.data.kpis.my_month_sales)"/>
+                                </h3>
+                                <small class="text-muted">Personal Volume</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="card shadow-sm border-0 border-start border-4 border-danger h-100 kpi-card" t-on-click="() => this.openInvoices([['amount_residual', '>', 0]], 'Customer Outstanding')">
+                            <div class="card-body">
+                                <span class="text-muted small text-uppercase fw-bold">Customer Outstanding</span>
+                                <h3 class="mb-0 mt-2 fw-bold text-danger">
+                                    <t t-esc="state.data.currency_symbol"/> <t t-esc="formatCurrency(state.data.kpis.total_receivables)"/>
+                                </h3>
+                                <small class="text-muted">Pending Collections</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- KPI GRID - ASSISTANT OPS & MARKETING VIEW -->
+                <div t-else="" class="row g-3 mb-4">
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="card shadow-sm border-0 border-start border-4 border-primary h-100 kpi-card" t-on-click="() => this.openSales([], 'Today Sales')">
+                            <div class="card-body">
+                                <span class="text-muted small text-uppercase fw-bold">Today's Sales</span>
+                                <h3 class="mb-0 mt-2 fw-bold text-dark">
+                                    <t t-esc="state.data.currency_symbol"/> <t t-esc="formatCurrency(state.data.kpis.today_sales)"/>
+                                </h3>
+                                <small class="text-muted">Team today</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="card shadow-sm border-0 border-start border-4 border-success h-100 kpi-card">
+                            <div class="card-body">
+                                <span class="text-muted small text-uppercase fw-bold">Today's Collections</span>
+                                <h3 class="mb-0 mt-2 fw-bold text-success">
+                                    <t t-esc="state.data.currency_symbol"/> <t t-esc="formatCurrency(state.data.kpis.today_collections)"/>
+                                </h3>
+                                <small class="text-muted">Collections</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="card shadow-sm border-0 border-start border-4 border-warning h-100 kpi-card" t-on-click="() => this.openSales([['state', 'in', ['draft', 'confirmed', 'in_progress']]], 'Pending Operations')">
+                            <div class="card-body">
+                                <span class="text-muted small text-uppercase fw-bold">Pending Operations</span>
+                                <h3 class="mb-0 mt-2 fw-bold text-warning">
+                                    <t t-esc="state.data.kpis.pending_transactions_count"/>
+                                </h3>
+                                <small class="text-muted">Active Bookings</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="card shadow-sm border-0 border-start border-4 border-info h-100 kpi-card">
+                            <div class="card-body">
+                                <span class="text-muted small text-uppercase fw-bold">My Monthly Sales</span>
+                                <h3 class="mb-0 mt-2 fw-bold text-info">
+                                    <t t-esc="state.data.currency_symbol"/> <t t-esc="formatCurrency(state.data.kpis.my_month_sales)"/>
+                                </h3>
+                                <small class="text-muted">My Sales</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ANALYTICS SECTION -->
+                <div class="row g-4 mb-4">
+                    <!-- Sales by Service -->
+                    <div class="col-12 col-lg-6">
+                        <div class="card shadow-sm border-0 h-100">
+                            <div class="card-header bg-white py-3 border-0">
+                                <h5 class="card-title mb-0 fw-bold text-dark">
+                                    <i class="fa fa-pie-chart text-primary me-2"/> Sales by Service (This Month)
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <t t-if="state.data.sales_by_service.length === 0">
+                                    <p class="text-muted small my-3 text-center">No sales records found for this period.</p>
+                                </t>
+                                <t t-else="">
+                                    <div t-foreach="state.data.sales_by_service" t-as="srv" t-key="srv.name" class="mb-3">
+                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                            <span class="fw-semibold text-dark"><t t-esc="srv.name"/> (<t t-esc="srv.count"/>)</span>
+                                            <span class="text-muted small">
+                                                <t t-esc="state.data.currency_symbol"/> <t t-esc="formatCurrency(srv.selling)"/>
+                                            </span>
+                                        </div>
+                                        <div class="progress" style="height: 8px;">
+                                            <div class="progress-bar bg-primary" role="progressbar" 
+                                                 t-att-style="'width: ' + ((srv.selling / (state.data.kpis.monthly_sales || 1)) * 100) + '%'"/>
+                                        </div>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sales by Staff / Performance -->
+                    <div class="col-12 col-lg-6">
+                        <div class="card shadow-sm border-0 h-100">
+                            <div class="card-header bg-white py-3 border-0">
+                                <h5 class="card-title mb-0 fw-bold text-dark">
+                                    <i class="fa fa-users text-success me-2"/> Salesperson Performance
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <t t-if="state.data.sales_by_staff.length === 0">
+                                    <p class="text-muted small my-3 text-center">No staff performance data available yet.</p>
+                                </t>
+                                <t t-else="">
+                                    <div t-foreach="state.data.sales_by_staff" t-as="staff" t-key="staff.name" class="mb-3">
+                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                            <span class="fw-semibold text-dark"><t t-esc="staff.name"/> (<t t-esc="staff.count"/> sales)</span>
+                                            <span class="text-success fw-bold small">
+                                                <t t-esc="state.data.currency_symbol"/> <t t-esc="formatCurrency(staff.selling)"/>
+                                            </span>
+                                        </div>
+                                        <div class="progress" style="height: 8px;">
+                                            <div class="progress-bar bg-success" role="progressbar" 
+                                                 t-att-style="'width: ' + ((staff.selling / (state.data.kpis.monthly_sales || 1)) * 100) + '%'"/>
+                                        </div>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BALANCES & RECENT TRANSACTIONS -->
+                <div class="row g-4 mb-4">
+                    <!-- Top Outstanding Customers -->
+                    <div class="col-12 col-lg-6">
+                        <div class="card shadow-sm border-0 h-100">
+                            <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center">
+                                <h5 class="card-title mb-0 fw-bold text-dark">
+                                    <i class="fa fa-exclamation-circle text-danger me-2"/> Top Outstanding Customers
+                                </h5>
+                                <button class="btn btn-sm btn-link p-0 text-decoration-none" t-on-click="() => this.openInvoices([['amount_residual', '>', 0]], 'All Debtors')">View All</button>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-hover align-middle mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th class="ps-3">Customer</th>
+                                                <th class="text-end pe-3">Outstanding Due</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-if="state.data.outstanding_customers.length === 0">
+                                                <tr>
+                                                    <td colspan="2" class="text-center text-muted py-4 small">No outstanding customer balances!</td>
+                                                </tr>
+                                            </t>
+                                            <tr t-foreach="state.data.outstanding_customers" t-as="c" t-key="c.id">
+                                                <td class="ps-3 fw-semibold text-dark"><t t-esc="c.name"/></td>
+                                                <td class="text-end pe-3 text-danger fw-bold">
+                                                    <t t-esc="state.data.currency_symbol"/> <t t-esc="formatCurrency(c.outstanding)"/>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Transactions -->
+                    <div class="col-12 col-lg-6">
+                        <div class="card shadow-sm border-0 h-100">
+                            <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center">
+                                <h5 class="card-title mb-0 fw-bold text-dark">
+                                    <i class="fa fa-history text-info me-2"/> Recent Sales Transactions
+                                </h5>
+                                <button class="btn btn-sm btn-link p-0 text-decoration-none" t-on-click="() => this.openSales([], 'All Sales')">View All</button>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-hover align-middle mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th class="ps-3">Ref</th>
+                                                <th>Customer</th>
+                                                <th>Amount</th>
+                                                <th class="text-end pe-3">Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-if="state.data.recent_sales.length === 0">
+                                                <tr>
+                                                    <td colspan="4" class="text-center text-muted py-4 small">No sales recorded yet.</td>
+                                                </tr>
+                                            </t>
+                                            <tr t-foreach="state.data.recent_sales" t-as="s" t-key="s.id" role="button" t-on-click="() => this.openSale(s.id)">
+                                                <td class="ps-3 fw-bold text-primary"><t t-esc="s.name"/></td>
+                                                <td><t t-esc="s.customer"/></td>
+                                                <td class="fw-semibold">
+                                                    <t t-esc="state.data.currency_symbol"/> <t t-esc="formatCurrency(s.amount)"/>
+                                                </td>
+                                                <td class="text-end pe-3">
+                                                    <span t-attf-class="badge rounded-pill bg-{{ s.state === 'completed' ? 'success' : s.state === 'confirmed' ? 'primary' : s.state === 'in_progress' ? 'info' : 'secondary' }}">
+                                                        <t t-esc="s.state"/>
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

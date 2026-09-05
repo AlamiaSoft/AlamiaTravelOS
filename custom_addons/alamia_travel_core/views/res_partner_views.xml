@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_partner_form_travel_inherit" model="ir.ui.view">
+            <field name="name">res.partner.form.travel.inherit</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='internal_notes']" position="before">
+                    <page string="Travel OS" name="travel_os">
+                        <group>
+                            <group string="Customer Information">
+                                <field name="is_travel_customer"/>
+                                <field name="travel_customer_type" invisible="not is_travel_customer"/>
+                            </group>
+                            <group string="Supplier Information">
+                                <field name="is_travel_supplier"/>
+                                <field name="travel_supplier_type" invisible="not is_travel_supplier"/>
+                            </group>
+                            <group string="Identification">
+                                <field name="cnic_passport"/>
+                                <field name="whatsapp_number"/>
+                            </group>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

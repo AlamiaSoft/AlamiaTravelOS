@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Sequence -->
+        <record id="seq_travel_sale" model="ir.sequence">
+            <field name="name">Travel Sale</field>
+            <field name="code">travel.sale</field>
+            <field name="prefix">KE-%(year)s-</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Form View -->
+        <record id="view_travel_sale_form" model="ir.ui.view">
+            <field name="name">travel.sale.form</field>
+            <field name="model">travel.sale</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button name="action_confirm" string="Confirm" type="object" invisible="state != 'draft'" class="oe_highlight"/>
+                        <button name="action_in_progress" string="Mark In Progress" type="object" invisible="state != 'confirmed'" class="oe_highlight"/>
+                        <button name="action_complete" string="Complete" type="object" invisible="state != 'in_progress'" class="oe_highlight"/>
+                        <button name="action_cancel" string="Cancel" type="object" invisible="state in ('completed', 'cancelled')"/>
+                        <button name="action_draft" string="Reset to Draft" type="object" invisible="state != 'cancelled'"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,in_progress,completed"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="customer_id" widget="res_partner_many2one" context="{'default_is_travel_customer': True}"/>
+                                <field name="date_sale"/>
+                                <field name="external_ref"/>
+                            </group>
+                            <group>
+                                <field name="salesperson_id"/>
+                                <field name="branch_id"/>
+                                <field name="currency_id" invisible="1"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Services" name="lines">
+                                <field name="line_ids">
+                                    <list editable="bottom">
+                                        <field name="sequence" widget="handle"/>
+                                        <field name="service_id"/>
+                                        <field name="description"/>
+                                        <field name="quantity"/>
+                                        <field name="unit_price"/>
+                                        <field name="selling_amount" readonly="1" force_save="1"/>
+                                        <field name="supplier_id" context="{'default_is_travel_supplier': True}"/>
+                                        <field name="cost_amount"/>
+                                        <field name="gross_profit" readonly="1"/>
+                                        <field name="currency_id" column_invisible="1"/>
+                                    </list>
+                                </field>
+                                <group name="note_group" col="6" class="mt-2 mt-md-0">
+                                    <group class="oe_subtotal_footer oe_right" colspan="2" name="sale_total">
+                                        <field name="total_selling_amount" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                        <field name="total_cost_amount" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                        <div class="oe_subtotal_footer_separator oe_inline o_td_label">
+                                            <label for="gross_profit"/>
+                                        </div>
+                                        <field name="gross_profit" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                    </group>
+                                    <div class="oe_clear"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- List View -->
+        <record id="view_travel_sale_list" model="ir.ui.view">
+            <field name="name">travel.sale.list</field>
+            <field name="model">travel.sale</field>
+            <field name="arch" type="xml">
+                <list decoration-info="state == 'draft'" decoration-muted="state == 'cancelled'" decoration-success="state == 'completed'">
+                    <field name="name"/>
+                    <field name="customer_id"/>
+                    <field name="date_sale"/>
+                    <field name="salesperson_id"/>
+                    <field name="total_selling_amount" sum="Total Sales"/>
+                    <field name="gross_profit" sum="Total Profit"/>
+                    <field name="state" widget="badge" decoration-info="state == 'draft'" decoration-muted="state == 'cancelled'" decoration-success="state == 'completed'"/>
+                    <field name="currency_id" column_invisible="1"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Search View -->
+        <record id="view_travel_sale_search" model="ir.ui.view">
+            <field name="name">travel.sale.search</field>
+            <field name="model">travel.sale</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name"/>
+                    <field name="customer_id"/>
+                    <field name="salesperson_id"/>
+                    <field name="external_ref"/>
+                    <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                    <filter string="Completed" name="completed" domain="[('state', '=', 'completed')]"/>
+                    <separator/>
+                    <filter string="Customer" name="groupby_customer" domain="[]" context="{'group_by': 'customer_id'}"/>
+                    <filter string="Salesperson" name="groupby_salesperson" domain="[]" context="{'group_by': 'salesperson_id'}"/>
+                    <filter string="Status" name="groupby_status" domain="[]" context="{'group_by': 'state'}"/>
+                    <filter string="Order Date" name="groupby_date" domain="[]" context="{'group_by': 'date_sale'}"/>
+                </search>
+            </field>
+        </record>
+
+        <!-- Action -->
+        <record id="action_travel_sale" model="ir.actions.act_window">
+            <field name="name">Sales</field>
+            <field name="res_model">travel.sale</field>
+            <field name="view_mode">list,form</field>
+            <field name="search_view_id" ref="view_travel_sale_search"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a new Travel Sale
+                </p>
+                <p>
+                    Record your customer's travel bookings, including tickets, visas, and other services.
+                </p>
+            </field>
+        </record>
+
+        <!-- Menu Item -->
+        <menuitem id="menu_travel_sales_main"
+                  name="Sales"
+                  parent="alamia_travel_core.menu_travel_operations"
+                  action="action_travel_sale"
+                  sequence="20"/>
+    </data>
+</odoo>

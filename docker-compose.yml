@@ -1,0 +1,57 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: alamia-odoo:19.0
+    container_name: alamiatravelos_web
+    command: ["--dev=reload,xml", "-d", "alamiatravelos", "--db-filter=^alamiatravelos$$"]
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "${WEB_PORT:-8069}:8069"
+      - "${CHAT_PORT:-8072}:8072"
+    environment:
+      - HOST=${DB_HOST:-db}
+      - PORT=${DB_PORT:-5432}
+      - USER=${DB_USER:-odoo}
+      - PASSWORD=${DB_PASSWORD:-odoo}
+    volumes:
+      - ./config/odoo.conf:/etc/odoo/odoo.conf:ro
+      - ./custom_addons:/mnt/extra-addons
+      - ./third_party_addons:/mnt/third-party-addons
+      - odoo-web-data:/var/lib/odoo
+    restart: unless-stopped
+    networks:
+      - odoo-network
+
+  db:
+    image: postgres:${POSTGRES_VERSION:-17-alpine}
+    container_name: alamiatravelos_db
+    environment:
+      - POSTGRES_DB=${DB_NAME:-postgres}
+      - POSTGRES_USER=${DB_USER:-odoo}
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-odoo}
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - odoo-db-data:/var/lib/postgresql/data/pgdata
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-odoo} -d ${DB_NAME:-postgres}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - odoo-network
+
+volumes:
+  odoo-web-data:
+    name: alamiatravelos_web_data
+  odoo-db-data:
+    name: alamiatravelos_db_data
+
+networks:
+  odoo-network:
+    name: alamiatravelos_network
+    driver: bridge

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Pivot View -->
+        <record id="view_travel_sale_pivot" model="ir.ui.view">
+            <field name="name">travel.sale.pivot</field>
+            <field name="model">travel.sale</field>
+            <field name="arch" type="xml">
+                <pivot string="Sales Analysis" display_quantity="1" sample="1">
+                    <field name="date_sale" type="row"/>
+                    <field name="total_selling_amount" type="measure"/>
+                    <field name="gross_profit" type="measure"/>
+                </pivot>
+            </field>
+        </record>
+
+        <!-- Graph View -->
+        <record id="view_travel_sale_graph" model="ir.ui.view">
+            <field name="name">travel.sale.graph</field>
+            <field name="model">travel.sale</field>
+            <field name="arch" type="xml">
+                <graph string="Sales Analysis" sample="1">
+                    <field name="date_sale"/>
+                    <field name="total_selling_amount" type="measure"/>
+                </graph>
+            </field>
+        </record>
+
+        <!-- Update Action -->
+        <record id="alamia_travel_sales.action_travel_sale" model="ir.actions.act_window">
+            <field name="view_mode">list,form,pivot,graph</field>
+        </record>
+
+        <!-- Menu Item -->
+        <menuitem id="menu_travel_reporting_main"
+                  name="Sales Analysis"
+                  parent="alamia_travel_core.menu_travel_reporting"
+                  action="alamia_travel_sales.action_travel_sale"
+                  sequence="10"/>
+    </data>
+</odoo>

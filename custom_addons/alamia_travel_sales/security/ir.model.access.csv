@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_travel_sale_user,travel.sale.user,model_travel_sale,alamia_travel_core.group_travel_sales,1,1,1,0
+access_travel_sale_line_user,travel.sale.line.user,model_travel_sale_line,alamia_travel_core.group_travel_sales,1,1,1,0
+access_travel_sale_manager,travel.sale.manager,model_travel_sale,alamia_travel_core.group_travel_manager,1,1,1,1
+access_travel_sale_line_manager,travel.sale.line.manager,model_travel_sale_line,alamia_travel_core.group_travel_manager,1,1,1,1
+access_travel_sale_ops,travel.sale.ops,model_travel_sale,alamia_travel_core.group_travel_ops,1,1,0,0
+access_travel_sale_line_ops,travel.sale.line.ops,model_travel_sale_line,alamia_travel_core.group_travel_ops,1,1,0,0

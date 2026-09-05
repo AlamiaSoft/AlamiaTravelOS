@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Root Menu -->
+        <menuitem id="menu_travel_os_root"
+                  name="Travel OS"
+                  web_icon="alamia_travel_core,static/description/icon.png"
+                  sequence="10"/>
+
+        <!-- Operations / Sales / Finance / Reporting will attach here -->
+        <menuitem id="menu_travel_operations"
+                  name="Operations"
+                  parent="menu_travel_os_root"
+                  sequence="10"/>
+
+        <menuitem id="menu_travel_finance"
+                  name="Finance"
+                  parent="menu_travel_os_root"
+                  sequence="20"/>
+
+        <menuitem id="menu_travel_reporting"
+                  name="Reporting"
+                  parent="menu_travel_os_root"
+                  sequence="30"/>
+
+        <menuitem id="menu_travel_configuration"
+                  name="Configuration"
+                  parent="menu_travel_os_root"
+                  sequence="100"/>
+                  
+        <!-- Master Data -->
+        <menuitem id="menu_travel_customers"
+                  name="Customers"
+                  parent="menu_travel_operations"
+                  action="contacts.action_contacts"
+                  sequence="10"/>
+                  
+    </data>
+</odoo>

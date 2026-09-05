@@ -1,0 +1,37 @@
+# Environment & Secrets
+.env
+.env.local
+*.env
+
+# Persistent Data directories
+data/
+odoo-data/
+db-data/
+filestore/
+sessions/
+*.dump
+*.sql
+*.tar.gz
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+
+# IDE & OS
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Generic / Dynamic Dashboard Action -->
+        <record id="action_travel_dashboard_main" model="ir.actions.client">
+            <field name="name">Dashboard</field>
+            <field name="tag">travel_dashboard_client_action</field>
+            <field name="context">{}</field>
+        </record>
+
+        <!-- CEO Executive Dashboard Action -->
+        <record id="action_travel_dashboard_ceo" model="ir.actions.client">
+            <field name="name">CEO Executive Dashboard</field>
+            <field name="tag">travel_dashboard_client_action</field>
+            <field name="context">{'dashboard_role': 'ceo'}</field>
+        </record>
+
+        <!-- Operations Director Dashboard Action -->
+        <record id="action_travel_dashboard_operations" model="ir.actions.client">
+            <field name="name">Operations Dashboard</field>
+            <field name="tag">travel_dashboard_client_action</field>
+            <field name="context">{'dashboard_role': 'operations'}</field>
+        </record>
+
+        <!-- Sales & Customer Relations Dashboard Action -->
+        <record id="action_travel_dashboard_sales" model="ir.actions.client">
+            <field name="name">Sales &amp; Customer Relations Dashboard</field>
+            <field name="tag">travel_dashboard_client_action</field>
+            <field name="context">{'dashboard_role': 'sales'}</field>
+        </record>
+
+        <!-- Operations & Marketing Dashboard Action -->
+        <record id="action_travel_dashboard_ops_marketing" model="ir.actions.client">
+            <field name="name">Operations &amp; Marketing Dashboard</field>
+            <field name="tag">travel_dashboard_client_action</field>
+            <field name="context">{'dashboard_role': 'ops_marketing'}</field>
+        </record>
+
+        <!-- Main Top Dashboard Menu Item -->
+        <menuitem id="menu_travel_dashboard_root"
+                  name="Dashboard"
+                  parent="alamia_travel_core.menu_travel_os_root"
+                  action="action_travel_dashboard_main"
+                  sequence="5"/>
+
+        <!-- Role-Specific Menus under Reporting / Dashboards -->
+        <menuitem id="menu_travel_dashboard_ceo"
+                  name="CEO Dashboard"
+                  parent="alamia_travel_core.menu_travel_reporting"
+                  action="action_travel_dashboard_ceo"
+                  groups="alamia_travel_core.travel_role_ceo,alamia_travel_core.group_travel_admin"
+                  sequence="1"/>
+
+        <menuitem id="menu_travel_dashboard_operations"
+                  name="Operations Dashboard"
+                  parent="alamia_travel_core.menu_travel_reporting"
+                  action="action_travel_dashboard_operations"
+                  groups="alamia_travel_core.travel_role_operations_director,alamia_travel_core.travel_role_ceo,alamia_travel_core.group_travel_admin"
+                  sequence="2"/>
+
+        <menuitem id="menu_travel_dashboard_sales"
+                  name="Sales Dashboard"
+                  parent="alamia_travel_core.menu_travel_reporting"
+                  action="action_travel_dashboard_sales"
+                  groups="alamia_travel_core.travel_role_sales_director,alamia_travel_core.travel_role_ceo,alamia_travel_core.group_travel_admin"
+                  sequence="3"/>
+
+        <menuitem id="menu_travel_dashboard_ops_marketing"
+                  name="Ops &amp; Marketing Dashboard"
+                  parent="alamia_travel_core.menu_travel_reporting"
+                  action="action_travel_dashboard_ops_marketing"
+                  groups="alamia_travel_core.travel_role_operations_marketing,alamia_travel_core.travel_role_ceo,alamia_travel_core.group_travel_admin"
+                  sequence="4"/>
+    </data>
+</odoo>
