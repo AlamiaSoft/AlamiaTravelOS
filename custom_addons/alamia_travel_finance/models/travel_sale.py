@@ -67,17 +67,20 @@ class TravelSale(models.Model):
         if self.state not in ['confirmed', 'in_progress', 'completed']:
             raise UserError(_("You can only create an invoice for a confirmed sale."))
         
+        default_income_account = self.env['account.account'].search([('account_type', 'in', ['income', 'income_other'])], limit=1)
+
         invoice_lines = []
         for line in self.line_ids:
             if line.selling_amount > 0:
-                if not line.service_id.income_account_id:
-                    raise UserError(_("Please define an Income Account for service: %s", line.service_id.name))
+                income_account = line.service_id.income_account_id or default_income_account
+                if not income_account:
+                    raise UserError(_("Please define an Income Account for service: %s or configure a default Income Account in Chart of Accounts.", line.service_id.name))
                 
                 invoice_lines.append((0, 0, {
                     'name': line.description,
                     'quantity': line.quantity,
                     'price_unit': line.unit_price,
-                    'account_id': line.service_id.income_account_id.id,
+                    'account_id': income_account.id,
                 }))
 
         if not invoice_lines:
@@ -99,6 +102,8 @@ class TravelSale(models.Model):
         if self.state not in ['confirmed', 'in_progress', 'completed']:
             raise UserError(_("You can only create vendor bills for a confirmed sale."))
         
+        default_expense_account = self.env['account.account'].search([('account_type', 'in', ['expense', 'expense_direct_cost'])], limit=1)
+
         # Group lines by supplier
         supplier_lines = {}
         for line in self.line_ids:
@@ -114,13 +119,15 @@ class TravelSale(models.Model):
         for supplier, lines in supplier_lines.items():
             bill_lines = []
             for line in lines:
-                if not line.service_id.expense_account_id:
-                    raise UserError(_("Please define an Expense Account for service: %s", line.service_id.name))
+                expense_account = line.service_id.expense_account_id or default_expense_account
+                if not expense_account:
+                    raise UserError(_("Please define an Expense Account for service: %s or configure a default Expense Account in Chart of Accounts.", line.service_id.name))
+
                 bill_lines.append((0, 0, {
                     'name': f"{self.name} - {line.description}",
                     'quantity': 1, # supplier cost is total cost
                     'price_unit': line.cost_amount,
-                    'account_id': line.service_id.expense_account_id.id,
+                    'account_id': expense_account.id,
                 }))
 
             bill_vals = {
