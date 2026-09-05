@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Syed Kamal Ahmed (CEO) -->
+        <record id="user_kamal" model="res.users">
+            <field name="name">Syed Kamal Ahmed</field>
+            <field name="login">kamal@kamalexpress.com</field>
+            <field name="email">kamal@kamalexpress.com</field>
+            <field name="group_ids" eval="[(6, 0, [
+                ref('base.group_user'),
+                ref('alamia_travel_core.travel_role_ceo')
+            ])]"/>
+        </record>
+
+        <!-- Malik Jawad (Head/Director Operations) -->
+        <record id="user_jawad" model="res.users">
+            <field name="name">Malik Jawad</field>
+            <field name="login">jawad@kamalexpress.com</field>
+            <field name="email">jawad@kamalexpress.com</field>
+            <field name="group_ids" eval="[(6, 0, [
+                ref('base.group_user'),
+                ref('alamia_travel_core.travel_role_operations_director')
+            ])]"/>
+        </record>
+
+        <!-- Ali Raza (Head/Director IT & Software) -->
+        <record id="user_ali" model="res.users">
+            <field name="name">Ali Raza</field>
+            <field name="login">ali@kamalexpress.com</field>
+            <field name="email">ali@kamalexpress.com</field>
+            <field name="group_ids" eval="[(6, 0, [
+                ref('base.group_user'),
+                ref('alamia_travel_core.travel_role_it_director')
+            ])]"/>
+        </record>
+
+        <!-- Tayyab (Assistant Manager Operations & Marketing) -->
+        <record id="user_tayyab" model="res.users">
+            <field name="name">Tayyab</field>
+            <field name="login">tayyab@kamalexpress.com</field>
+            <field name="email">tayyab@kamalexpress.com</field>
+            <field name="group_ids" eval="[(6, 0, [
+                ref('base.group_user'),
+                ref('alamia_travel_core.travel_role_operations_marketing')
+            ])]"/>
+        </record>
+
+        <!-- Zeeshan (Head/Director Sales & Customer Relations) -->
+        <record id="user_zeeshan" model="res.users">
+            <field name="name">Zeeshan</field>
+            <field name="login">zeeshan@kamalexpress.com</field>
+            <field name="email">zeeshan@kamalexpress.com</field>
+            <field name="group_ids" eval="[(6, 0, [
+                ref('base.group_user'),
+                ref('alamia_travel_core.travel_role_sales_director')
+            ])]"/>
+        </record>
+    </data>
+</odoo>

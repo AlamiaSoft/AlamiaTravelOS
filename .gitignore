@@ -3,12 +3,12 @@
 .env.local
 *.env
 
-# Persistent Data directories
-data/
-odoo-data/
-db-data/
-filestore/
-sessions/
+# Persistent Data directories (Root level only)
+/data/
+/odoo-data/
+/db-data/
+/filestore/
+/sessions/
 *.dump
 *.sql
 *.tar.gz
