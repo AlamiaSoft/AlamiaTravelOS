@@ -2,3 +2,4 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_travel_service_catalog_user,travel.service.catalog.user,model_travel_service_catalog,base.group_user,1,0,0,0
 access_travel_service_catalog_manager,travel.service.catalog.manager,model_travel_service_catalog,group_travel_manager,1,1,1,0
 access_travel_service_catalog_admin,travel.service.catalog.admin,model_travel_service_catalog,group_travel_admin,1,1,1,1
+access_travel_data_import_wizard_user,travel.data.import.wizard.user,model_travel_data_import_wizard,base.group_user,1,1,1,1
