@@ -1,9 +1,14 @@
+# Production Docker Compose for Hetzner / Oracle Cloud VPS
+
 services:
+
   web:
     build:
       context: .
       dockerfile: Dockerfile
+
     image: alamia-odoo:19.0
+
     container_name: alamiatravelos_web_prod
 
     command:
@@ -21,15 +26,12 @@ services:
       - "${CHAT_PORT:-8072}:8072"
 
     environment:
-      - HOST=${DB_HOST:-db}
-      - PORT=${DB_PORT:-5432}
-      - USER=${DB_USER:-odoo}
-      - PASSWORD=${DB_PASSWORD:-odoo}
+      HOST: ${DB_HOST:-db}
+      PORT: ${DB_PORT:-5432}
+      USER: ${DB_USER:-odoo}
+      PASSWORD: ${DB_PASSWORD:-odoo}
 
     volumes:
-      - odoo-config:/etc/odoo/odoo.conf:ro
-      - custom-addons:/mnt/extra-addons
-      - third-party-addons:/mnt/third-party-addons
       - odoo-web-data:/var/lib/odoo
 
     restart: always
@@ -39,13 +41,14 @@ services:
 
   db:
     image: postgres:${POSTGRES_VERSION:-17-alpine}
+
     container_name: alamiatravelos_db_prod
 
     environment:
-      - POSTGRES_DB=${DB_NAME}
-      - POSTGRES_USER=${DB_USER}
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
-      - PGDATA=/var/lib/postgresql/data/pgdata
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      PGDATA: /var/lib/postgresql/data/pgdata
 
     volumes:
       - odoo-db-data:/var/lib/postgresql/data/pgdata
@@ -62,6 +65,7 @@ services:
       - odoo-prod-network
 
 # Optional Nginx Reverse Proxy with SSL
+#
 # Uncomment if using containerized Nginx.
 #
 #  nginx:
@@ -80,10 +84,8 @@ services:
 #    networks:
 #      - odoo-prod-network
 
+
 volumes:
-  odoo-config:
-  custom-addons:
-  third-party-addons:
 
   odoo-web-data:
     name: alamiatravelos_prod_web_data
@@ -92,6 +94,7 @@ volumes:
     name: alamiatravelos_prod_db_data
 
 networks:
+
   odoo-prod-network:
     name: alamiatravelos_prod_network
     driver: bridge
