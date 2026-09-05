@@ -39,8 +39,21 @@ services:
       - PGDATA=/var/lib/postgresql/data/pgdata
     volumes:
       - odoo-db-data:/var/lib/postgresql/data/pgdata
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        /usr/local/bin/docker-entrypoint.sh postgres &
+        PID=$$!
+        (
+          until psql -U postgres -d postgres -c "SELECT 1" >/dev/null 2>&1 || psql -U odoo -d postgres -c "SELECT 1" >/dev/null 2>&1; do sleep 1; done
+          psql -U postgres -d postgres -c "CREATE USER odoo WITH PASSWORD 'odoo' SUPERUSER CREATEDB CREATEROLE;" >/dev/null 2>&1 || true
+          psql -U postgres -d postgres -c "ALTER USER odoo WITH PASSWORD 'odoo';" >/dev/null 2>&1 || true
+          psql -U odoo -d postgres -c "ALTER USER odoo WITH PASSWORD 'odoo';" >/dev/null 2>&1 || true
+        ) &
+        wait $$PID
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-odoo} -d ${DB_NAME:-postgres}"]
+      test: ["CMD-SHELL", "pg_isready -d ${DB_NAME:-postgres}"]
       interval: 5s
       timeout: 5s
       retries: 10
