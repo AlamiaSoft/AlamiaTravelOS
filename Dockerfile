@@ -31,5 +31,12 @@ RUN pip3 install --no-cache-dir --break-system-packages \
     defusedxml \
     packaging
 
+# Copy custom configuration and addons into image
+COPY config/odoo.conf /etc/odoo/odoo.conf
+COPY custom_addons /mnt/extra-addons
+COPY third_party_addons /mnt/third-party-addons
+
+RUN chown -R odoo:odoo /etc/odoo /mnt/extra-addons /mnt/third-party-addons
+
 # Switch back to the unprivileged odoo user
 USER odoo
