@@ -9,7 +9,7 @@
     """,
     'author': 'Ali Raza',
     'website': 'https://github.com/amrshah',
-    'depends': ['alamia_travel_sales', 'account'],
+    'depends': ['alamia_travel_sales', 'account', 'account_financial_report'],
     'data': [
         'security/ir.model.access.csv',
         'data/expense_category_data.xml',
