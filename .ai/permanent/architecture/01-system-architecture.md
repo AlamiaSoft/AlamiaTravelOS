@@ -33,9 +33,11 @@ AlamiaTravelOS is a **Dockerized Odoo 19.0 Community Edition** deployment optimi
 
 ### 4. Integration Layer
 - **MCP Protocol** — External tool integration (API keys, OAuth, model context)
+- **Alamia AI Employee Runtime** — Role-based AI Employee platform with decoupled `SkillDefinition` contracts, 5 `RoleManifest` profiles, session bootstrapping (`EmployeeContext`), `ActionStateMachine` authorization, and deterministic fact tools (`mcp_tools_alamia_ai.py`).
 - **Kamal Express Excel migration** — Historical data import task pipeline (task-1.md → task-2.md)
 - **Backup system** — `scripts/backup.sh` (PostgreSQL + filestore cron job)
 - **Management scripts** — `scripts/manage.ps1` (Windows) / `manage.sh` (Linux/macOS)
+
 
 ### 5. Deployment Patterns
 

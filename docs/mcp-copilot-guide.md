@@ -119,21 +119,30 @@ Once connected, you can ask your AI Copilot questions like:
 
 ---
 
-## 6. Alamia AI Employee Runtime — Business Fact Tools & Action Proposals
+## 6. Alamia AI Employee Runtime — Role-Based Skills & Fact Tools
 
-The **Alamia AI Employee Runtime** exposes domain-aware Business Fact Tools and Action Tools for AI Assistants (`ceo_assistant`, `operations_assistant`, `sales_assistant`, `accounting_assistant`, `ticketing_assistant`).
+The **Alamia AI Employee Runtime** transforms standard MCP API access into a domain-aware **AI Employee Platform**. It decouples generic model access from role-based business capabilities.
 
-### Session Bootstrap
-- **`get_employee_profile`**: First call in an AI session to bootstrap user identity, role profile, allowed skills, allowed tools, and session context.
+### 6.1 Role-Based Skills System & Manifests (`alamia_ai_registry.py`)
+- **`SkillDefinition`**: Structured abstraction defining a business capability (`skill_id`, `name`, `objectives`, `required_tools`, `risk_level`, `allowed_roles`).
+- **`RoleManifest`**: AI Employee profile mapping roles to permitted skills (`ceo_assistant`, `operations_assistant`, `sales_assistant`, `accounting_assistant`, `ticketing_assistant`).
+- **`SkillRegistry`**: Centralized lookup resolving allowed skills and tool catalogs for active user sessions.
 
-### Business Fact Tools (Deterministic JSON Output)
-- **`get_customer_360`**: Single-call 360° customer dossier (lifetime spent, active bookings, payment shortfall, activities).
-- **`get_booking_360`**: Single-call 360° booking state (`KE-XXXXX`) detailing passengers, visa state, service lines, and payment shortfall.
-- **`get_work_items`**: Raw operational priority queue filtered by user role and urgency (`critical`, `attention`, `routine`).
-- **`get_booking_profitability`**: Line-by-line revenue, supplier costs, commissions, gross profit, and margin %.
+#### Implemented Skills Catalog
+1. **`customer_360`**: Single-call 360° customer dossier (LTV, active bookings, unpaid balances, activities).
+2. **`booking_360`**: Comprehensive booking status (`KE-XXXXX`), passenger passports, visa readiness, and supplier line allocations.
+3. **`booking_readiness`**: Departure readiness analysis, missing passport/visa document alerts, and unconfirmed supplier allocations.
+4. **`daily_briefing`**: Role-scoped morning work summary prioritizing overdues and operational tasks.
+5. **`payment_followup`**: Receivables shortfall analysis and `mail.activity` proposal generation with chatter audit logs.
+6. **`booking_profitability`**: Deterministic financial calculation of selling amounts, supplier costs, commissions, and margin %.
+7. **`work_queue`**: Operational task filtering by urgency (`critical`, `attention`, `routine`).
 
-### Action Tools & Security
+### 6.2 Session Bootstrap
+- **`get_employee_profile`**: First call in an AI session to bootstrap user identity, role profile, allowed skills, allowed tools, and session context before operational tools are exposed to the model.
+
+### 6.3 Action Tools & Backend-Derived Security
 - **`propose_action`**: Generates a validated `ActionProposal` payload (`action_id`, `idempotency_key`, `risk_level`, `requires_confirmation`).
-- **`create_followup`**: Level 1 write tool that creates `mail.activity` and posts an automated chatter audit log entry (`"Action executed via Alamia Travels AI by User X"`).
+- **`create_followup`**: Level 1 write tool creating `mail.activity` and posting an automated chatter audit log entry (`"Action executed via Alamia Travels AI by User X"`).
 - **Backend-Derived Security**: Role permissions, risk levels, and confirmation policies are strictly derived and enforced by the backend (`ActionStateMachine`).
+
 
