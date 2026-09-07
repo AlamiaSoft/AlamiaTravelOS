@@ -440,6 +440,8 @@
                         </div>
                     </div>
                 </div>
+                <!-- Bottom Clearance Spacer for Smooth Viewport Scrolling -->
+                <div class="w-100 clearfix" style="height: 150px; min-height: 150px; display: block;" aria-hidden="true"/>
             </div>
 
             <!-- MODAL: MARK ACTIVITY DONE (OUTCOME CAPTURE) -->
