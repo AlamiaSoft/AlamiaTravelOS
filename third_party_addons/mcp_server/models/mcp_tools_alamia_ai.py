@@ -133,7 +133,7 @@ class McpToolsAlamiaAi(models.AbstractModel):
                 "id": partner.id,
                 "name": partner.name,
                 "email": partner.email or "",
-                "phone": partner.phone or partner.mobile or "",
+                "phone": partner.phone or getattr(partner, "mobile", False) or "",
                 "whatsapp_number": getattr(partner, "whatsapp_number", False) or "",
                 "cnic_passport": getattr(partner, "cnic_passport", False) or "",
             },
