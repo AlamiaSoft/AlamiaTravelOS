@@ -93,5 +93,9 @@
             <value eval="[ref('alamia_travel_core.user_zeeshan')]"/>
             <value eval="{'action_id': ref('action_travel_dashboard_sales')}"/>
         </function>
+        <function model="res.users" name="write">
+            <value eval="[ref('base.user_admin')]"/>
+            <value eval="{'action_id': ref('action_travel_dashboard_main')}"/>
+        </function>
     </data>
 </odoo>

@@ -54,12 +54,16 @@ class TestPhase2Features(TransactionCase):
         user_zeeshan = self.env.ref('alamia_travel_core.user_zeeshan')
         user_tayyab = self.env.ref('alamia_travel_core.user_tayyab')
         user_ali = self.env.ref('alamia_travel_core.user_ali')
+        user_admin = self.env.ref('base.user_admin')
+
 
         self.assertTrue(user_kamal.action_id, "Kamal should have a default home action.")
         self.assertTrue(user_jawad.action_id, "Jawad should have a default home action.")
         self.assertTrue(user_zeeshan.action_id, "Zeeshan should have a default home action.")
         self.assertTrue(user_tayyab.action_id, "Tayyab should have a default home action.")
         self.assertTrue(user_ali.action_id, "Ali should have a default home action.")
+        self.assertTrue(user_admin.action_id, "Admin should have a default home action.")
+
 
     def test_02_expense_management_workflow(self):
         """ Verify expense category creation, expense creation, approval, and posting """
