@@ -131,5 +131,6 @@
               name="Dashboard Settings"
               parent="alamia_travel_core.menu_travel_configuration"
               action="action_travel_dashboard_config_settings"
+              groups="alamia_travel_core.group_travel_admin"
               sequence="100"/>
 </odoo>

@@ -14,6 +14,7 @@
         'security/security.xml',
         'security/ir.model.access.csv',
         'data/users_data.xml',
+        'data/activity_type_data.xml',
         'views/menus.xml',
         'views/service_catalog_views.xml',
         'views/res_partner_views.xml',

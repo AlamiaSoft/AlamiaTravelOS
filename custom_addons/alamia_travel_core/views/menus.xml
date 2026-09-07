@@ -11,28 +11,56 @@
         <menuitem id="menu_travel_operations"
                   name="Operations"
                   parent="menu_travel_os_root"
+                  groups="group_travel_ops"
                   sequence="10"/>
 
         <menuitem id="menu_travel_finance"
                   name="Finance"
                   parent="menu_travel_os_root"
+                  groups="group_travel_manager,travel_role_ceo,travel_role_operations_director,travel_role_it_director"
                   sequence="20"/>
+        <record id="menu_travel_finance" model="ir.ui.menu">
+            <field name="group_ids" eval="[(6, 0, [
+                ref('group_travel_manager'),
+                ref('travel_role_ceo'),
+                ref('travel_role_operations_director'),
+                ref('travel_role_it_director')
+            ])]"/>
+        </record>
 
         <menuitem id="menu_travel_reporting"
                   name="Reporting"
                   parent="menu_travel_os_root"
+                  groups="group_travel_manager,travel_role_ceo,travel_role_operations_director,travel_role_sales_director,travel_role_it_director"
                   sequence="30"/>
+        <record id="menu_travel_reporting" model="ir.ui.menu">
+            <field name="group_ids" eval="[(6, 0, [
+                ref('group_travel_manager'),
+                ref('travel_role_ceo'),
+                ref('travel_role_operations_director'),
+                ref('travel_role_sales_director'),
+                ref('travel_role_it_director')
+            ])]"/>
+        </record>
 
         <menuitem id="menu_travel_configuration"
                   name="Configuration"
                   parent="menu_travel_os_root"
+                  groups="group_travel_manager,group_travel_admin"
                   sequence="100"/>
+        <record id="menu_travel_configuration" model="ir.ui.menu">
+            <field name="group_ids" eval="[(6, 0, [
+                ref('group_travel_manager'),
+                ref('group_travel_admin')
+            ])]"/>
+        </record>
                   
         <!-- Master Data -->
         <menuitem id="menu_travel_customers"
                   name="Customers"
                   parent="menu_travel_operations"
                   action="contacts.action_contacts"
+                  groups="group_travel_ops"
                   sequence="10"/>
                   
     </data>

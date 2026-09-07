@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <!-- Update default Activity Types to default to Today (0 days delay) for Travel OS -->
+        <record id="mail.mail_activity_data_todo" model="mail.activity.type">
+            <field name="delay_count">0</field>
+        </record>
+        <record id="mail.mail_activity_data_call" model="mail.activity.type">
+            <field name="delay_count">0</field>
+        </record>
+        <record id="mail.mail_activity_data_email" model="mail.activity.type">
+            <field name="delay_count">0</field>
+        </record>
+    </data>
+</odoo>

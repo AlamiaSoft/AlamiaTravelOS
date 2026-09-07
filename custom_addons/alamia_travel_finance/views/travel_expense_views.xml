@@ -177,7 +177,8 @@
         <!-- Menu Items for Expenses -->
         <menuitem id="menu_travel_expenses_root"
                   name="Expenses"
-                  parent="alamia_travel_core.menu_travel_os_root"
+                  parent="alamia_travel_core.menu_travel_finance"
+                  groups="alamia_travel_core.group_travel_manager,alamia_travel_core.travel_role_ceo,alamia_travel_core.travel_role_operations_director,alamia_travel_core.travel_role_it_director"
                   sequence="25"/>
 
         <menuitem id="menu_travel_expenses_list"

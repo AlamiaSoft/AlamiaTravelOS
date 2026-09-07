@@ -244,4 +244,35 @@ class TestPhase2Features(TransactionCase):
         data_updated = Dashboard.get_dashboard_data('ops_marketing')
         self.assertTrue(data_updated.get('widget_permissions', {}).get('sales_by_service'))
 
+    def test_08_role_based_menu_visibility(self):
+        """ Verify menu visibility security rules across user roles """
+        user_tayyab = self.env.ref('alamia_travel_core.user_tayyab')
+        user_kamal = self.env.ref('alamia_travel_core.user_kamal')
+        user_ali = self.env.ref('alamia_travel_core.user_ali')
 
+        menu_config = self.env.ref('alamia_travel_core.menu_travel_configuration')
+        menu_finance = self.env.ref('alamia_travel_core.menu_travel_finance')
+        menu_ops = self.env.ref('alamia_travel_core.menu_travel_operations')
+        menu_dash_settings = self.env.ref('alamia_travel_reporting.menu_travel_dashboard_settings')
+
+        all_menus = self.env['ir.ui.menu'].search([])
+
+        # 1. Tayyab (Ops & Marketing) - Should see Operations, but NOT Configuration, Finance, or Dashboard Settings
+        tayyab_visible = all_menus.with_user(user_tayyab)._filter_visible_menus()
+        self.assertIn(menu_ops, tayyab_visible, "Tayyab should have access to Operations menu.")
+        self.assertNotIn(menu_config, tayyab_visible, "Tayyab should NOT have access to Configuration menu.")
+        
+        self.assertNotIn(menu_finance, tayyab_visible, "Tayyab should NOT have access to Finance menu.")
+        self.assertNotIn(menu_dash_settings, tayyab_visible, "Tayyab should NOT have access to Dashboard Settings menu.")
+
+        # 2. Kamal (CEO) - Should see Operations, Finance, Reporting
+        kamal_visible = all_menus.with_user(user_kamal)._filter_visible_menus()
+        self.assertIn(menu_ops, kamal_visible, "Kamal should have access to Operations menu.")
+        self.assertIn(menu_finance, kamal_visible, "Kamal should have access to Finance menu.")
+
+        # 3. Ali (IT Director / Admin) - Should see all menus including Configuration and Dashboard Settings
+        ali_visible = all_menus.with_user(user_ali)._filter_visible_menus()
+        self.assertIn(menu_ops, ali_visible)
+        self.assertIn(menu_config, ali_visible, "Ali should have access to Configuration menu.")
+        self.assertIn(menu_finance, ali_visible, "Ali should have access to Finance menu.")
+        self.assertIn(menu_dash_settings, ali_visible, "Ali should have access to Dashboard Settings menu.")

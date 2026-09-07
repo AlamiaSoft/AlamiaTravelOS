@@ -140,6 +140,7 @@
                   name="Sales"
                   parent="alamia_travel_core.menu_travel_operations"
                   action="action_travel_sale"
+                  groups="alamia_travel_core.group_travel_ops"
                   sequence="20"/>
     </data>
 </odoo>

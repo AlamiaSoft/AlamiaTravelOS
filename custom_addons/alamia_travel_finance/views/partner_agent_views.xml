@@ -98,8 +98,9 @@
         <!-- Menu Item for Sub-Agents & Partners -->
         <menuitem id="menu_travel_sub_agents"
                   name="Sub-Agents &amp; Partners"
-                  parent="alamia_travel_core.menu_travel_os_root"
+                  parent="alamia_travel_core.menu_travel_operations"
                   action="action_travel_sub_agents"
+                  groups="alamia_travel_core.group_travel_ops"
                   sequence="35"/>
     </data>
 </odoo>

@@ -43,8 +43,9 @@
         <!-- Menu Item -->
         <menuitem id="menu_travel_data_import_wizard"
                   name="Excel Data Import"
-                  parent="alamia_travel_core.menu_travel_os_root"
+                  parent="alamia_travel_core.menu_travel_configuration"
                   action="action_travel_data_import_wizard"
+                  groups="alamia_travel_core.group_travel_admin"
                   sequence="90"/>
     </data>
 </odoo>

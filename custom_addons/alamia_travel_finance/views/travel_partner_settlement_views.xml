@@ -79,8 +79,9 @@
         <!-- Menu Item -->
         <menuitem id="menu_travel_partner_settlement"
                   name="Partner Settlements"
-                  parent="alamia_travel_core.menu_travel_os_root"
+                  parent="alamia_travel_core.menu_travel_finance"
                   action="action_travel_partner_settlement"
+                  groups="alamia_travel_core.group_travel_manager,alamia_travel_core.travel_role_ceo,alamia_travel_core.travel_role_operations_director,alamia_travel_core.travel_role_it_director"
                   sequence="35"/>
     </data>
 </odoo>
