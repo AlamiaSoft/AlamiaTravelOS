@@ -14,6 +14,7 @@
     'data': [
         'views/reporting_views.xml',
         'views/dashboard_actions.xml',
+        'views/res_config_settings_views.xml',
     ],
     'assets': {
         'web.assets_backend': [

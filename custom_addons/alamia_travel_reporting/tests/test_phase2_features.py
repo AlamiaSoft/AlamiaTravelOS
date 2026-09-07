@@ -223,3 +223,25 @@ class TestPhase2Features(TransactionCase):
         self.assertEqual(tayyab_workload['today_count'], initial_today - 1)
         self.assertEqual(tayyab_workload['upcoming_count'], initial_upcoming + 1)
 
+    def test_07_dynamic_dashboard_widget_permissions(self):
+        """ Verify dynamic dashboard widget permissions matrix via ir.config_parameter """
+        icp = self.env['ir.config_parameter'].sudo()
+
+        # Disable sales_by_service for ops_marketing role and enable team_workload
+        icp.set_param('alamia_travel.dashboard_show_sales_by_service_ops_marketing', 'False')
+        icp.set_param('alamia_travel.dashboard_show_team_workload_ops_marketing', 'True')
+
+        user_tayyab = self.env.ref('alamia_travel_core.user_tayyab')
+        Dashboard = self.env['travel.dashboard'].with_user(user_tayyab)
+        data = Dashboard.get_dashboard_data('ops_marketing')
+
+        perms = data.get('widget_permissions', {})
+        self.assertFalse(perms.get('sales_by_service'), "Sales by Service widget should be disabled for ops_marketing.")
+        self.assertTrue(perms.get('team_workload'), "Team workload widget should be enabled for ops_marketing.")
+
+        # Re-enable
+        icp.set_param('alamia_travel.dashboard_show_sales_by_service_ops_marketing', 'True')
+        data_updated = Dashboard.get_dashboard_data('ops_marketing')
+        self.assertTrue(data_updated.get('widget_permissions', {}).get('sales_by_service'))
+
+

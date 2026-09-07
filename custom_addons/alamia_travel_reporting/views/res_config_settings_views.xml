@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_travel_reporting" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.travel.reporting</field>
+        <field name="model">res.config.settings</field>
+        <field name="priority" eval="90"/>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app data-string="Travel OS Dashboards" string="Travel OS Dashboards" name="alamia_travel_reporting">
+                    <block title="Dashboard Role Widget Matrix" id="travel_dashboard_widgets_setting">
+                        <!-- CEO Role -->
+                        <setting title="CEO Dashboard Widgets" help="Configure widget visibility for CEO Executive Role">
+                            <div class="content-group">
+                                <div class="row mt16">
+                                    <label for="dashboard_show_attention_ceo" class="col-lg-5 o_light_label"/>
+                                    <field name="dashboard_show_attention_ceo"/>
+                                </div>
+                                <div class="row mt16">
+                                    <label for="dashboard_show_quick_actions_ceo" class="col-lg-5 o_light_label"/>
+                                    <field name="dashboard_show_quick_actions_ceo"/>
+                                </div>
+                                <div class="row mt16">
+                                    <label for="dashboard_show_team_workload_ceo" class="col-lg-5 o_light_label"/>
+                                    <field name="dashboard_show_team_workload_ceo"/>
+                                </div>
+                                <div class="row mt16">
+                                    <label for="dashboard_show_sales_by_service_ceo" class="col-lg-5 o_light_label"/>
+                                    <field name="dashboard_show_sales_by_service_ceo"/>
+                                </div>
+                                <div class="row mt16">
+                                    <label for="dashboard_show_sales_by_staff_ceo" class="col-lg-5 o_light_label"/>
+                                    <field name="dashboard_show_sales_by_staff_ceo"/>
+                                </div>
+                            </div>
+                        </setting>
+
+                        <!-- Operations Director Role -->
+                        <setting title="Operations Director Widgets" help="Configure widget visibility for Head/Director Operations">
+                            <div class="content-group">
+                                <div class="row mt16">
+                                    <label for="dashboard_show_attention_operations" class="col-lg-5 o_light_label"/>
+                                    <field name="dashboard_show_attention_operations"/>
+                                </div>
+                                <div class="row mt16">
+                                    <label for="dashboard_show_quick_actions_operations" class="col-lg-5 o_light_label"/>
+                                    <field name="dashboard_show_quick_actions_operations"/>
+                                </div>
+                                <div class="row mt16">
+                                    <label for="dashboard_show_team_workload_operations" class="col-lg-5 o_light_label"/>
+                                    <field name="dashboard_show_team_workload_operations"/>
+                                </div>
+                                <div class="row mt16">
+                                    <label for="dashboard_show_sales_by_service_operations" class="col-lg-5 o_light_label"/>
+                                    <field name="dashboard_show_sales_by_service_operations"/>
+                                </div>
+                                <div class="row mt16">
+                                    <label for="dashboard_show_sales_by_staff_operations" class="col-lg-5 o_light_label"/>
+                                    <field name="dashboard_show_sales_by_staff_operations"/>
+                                </div>
+                            </div>
+                        </setting>
+
+                        <!-- Sales Director Role -->
+                        <setting title="Sales Director Widgets" help="Configure widget visibility for Head/Director Sales">
+                            <div class="content-group">
+                                <div class="row mt16">
+                                    <label for="dashboard_show_attention_sales" class="col-lg-5 o_light_label"/>
+                                    <field name="dashboard_show_attention_sales"/>
+                                </div>
+                                <div class="row mt16">
+                                    <label for="dashboard_show_quick_actions_sales" class="col-lg-5 o_light_label"/>
+                                    <field name="dashboard_show_quick_actions_sales"/>
+                                </div>
+                                <div class="row mt16">
+                                    <label for="dashboard_show_team_workload_sales" class="col-lg-5 o_light_label"/>
+                                    <field name="dashboard_show_team_workload_sales"/>
+                                </div>
+                                <div class="row mt16">
+                                    <label for="dashboard_show_sales_by_service_sales" class="col-lg-5 o_light_label"/>
+                                    <field name="dashboard_show_sales_by_service_sales"/>
+                                </div>
+                                <div class="row mt16">
+                                    <label for="dashboard_show_sales_by_staff_sales" class="col-lg-5 o_light_label"/>
+                                    <field name="dashboard_show_sales_by_staff_sales"/>
+                                </div>
+                            </div>
+                        </setting>
+
+                        <!-- Operations & Marketing Role -->
+                        <setting title="Assistant Ops &amp; Marketing Widgets" help="Configure widget visibility for Assistant Manager Operations &amp; Marketing">
+                            <div class="content-group">
+                                <div class="row mt16">
+                                    <label for="dashboard_show_attention_ops_marketing" class="col-lg-5 o_light_label"/>
+                                    <field name="dashboard_show_attention_ops_marketing"/>
+                                </div>
+                                <div class="row mt16">
+                                    <label for="dashboard_show_quick_actions_ops_marketing" class="col-lg-5 o_light_label"/>
+                                    <field name="dashboard_show_quick_actions_ops_marketing"/>
+                                </div>
+                                <div class="row mt16">
+                                    <label for="dashboard_show_team_workload_ops_marketing" class="col-lg-5 o_light_label"/>
+                                    <field name="dashboard_show_team_workload_ops_marketing"/>
+                                </div>
+                                <div class="row mt16">
+                                    <label for="dashboard_show_sales_by_service_ops_marketing" class="col-lg-5 o_light_label"/>
+                                    <field name="dashboard_show_sales_by_service_ops_marketing"/>
+                                </div>
+                                <div class="row mt16">
+                                    <label for="dashboard_show_sales_by_staff_ops_marketing" class="col-lg-5 o_light_label"/>
+                                    <field name="dashboard_show_sales_by_staff_ops_marketing"/>
+                                </div>
+                            </div>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_travel_dashboard_config_settings" model="ir.actions.act_window">
+        <field name="name">Dashboard Settings</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+        <field name="context">{'module' : 'alamia_travel_reporting'}</field>
+    </record>
+
+    <menuitem id="menu_travel_dashboard_settings"
+              name="Dashboard Settings"
+              parent="alamia_travel_core.menu_travel_configuration"
+              action="action_travel_dashboard_config_settings"
+              sequence="100"/>
+</odoo>

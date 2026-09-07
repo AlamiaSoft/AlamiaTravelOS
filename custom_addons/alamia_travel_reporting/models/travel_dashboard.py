@@ -281,11 +281,31 @@ class TravelDashboard(models.AbstractModel):
         }
         pending_transactions_count = workload['draft'] + workload['confirmed'] + workload['in_progress']
 
+        # Dynamic Role Widget Permissions from ir.config_parameter
+        icp = self.env['ir.config_parameter'].sudo()
+
+        def get_widget_perm(param_key, default=True):
+            val = icp.get_param(param_key, str(default))
+            return val == 'True' or val is True
+
+        default_team_workload = role in ('ceo', 'operations')
+
+        widget_permissions = {
+            'my_work_today': True,
+            'attention_items': get_widget_perm(f'alamia_travel.dashboard_show_attention_{role}', True),
+            'quick_actions': get_widget_perm(f'alamia_travel.dashboard_show_quick_actions_{role}', True),
+            'team_workload': get_widget_perm(f'alamia_travel.dashboard_show_team_workload_{role}', default_team_workload),
+            'sales_by_service': get_widget_perm(f'alamia_travel.dashboard_show_sales_by_service_{role}', True),
+            'sales_by_staff': get_widget_perm(f'alamia_travel.dashboard_show_sales_by_staff_{role}', True),
+            'kpis': get_widget_perm(f'alamia_travel.dashboard_show_kpis_{role}', True),
+        }
+
         # Construct Final Role Payload
         data = {
             'role': role,
             'user_name': user.name,
             'currency_symbol': currency_symbol,
+            'widget_permissions': widget_permissions,
             'my_activities': {
                 'overdue': act_overdue,
                 'today': act_today,

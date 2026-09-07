@@ -245,7 +245,7 @@
                 </div>
 
                 <!-- TIER 2: ATTENTION REQUIRED (EXCEPTIONS & UNASSIGNED WORK) -->
-                <div class="row g-3 mb-4">
+                <div t-if="state.data.widget_permissions.attention_items" class="row g-3 mb-4">
                     <div class="col-12 col-md-6 col-lg-3">
                         <div class="card shadow-sm border-0 border-start border-4 border-danger h-100 kpi-card" t-on-click="() => this.openInvoices([['amount_residual', '>', 0], ['move_type', '=', 'out_invoice']], 'Overdue Receivables (>7d)')">
                             <div class="card-body">
@@ -304,7 +304,7 @@
                 </div>
 
                 <!-- TIER 3: ROLE-SPECIFIC QUICK ACTIONS -->
-                <div class="card shadow-sm border-0 mb-4">
+                <div t-if="state.data.widget_permissions.quick_actions" class="card shadow-sm border-0 mb-4">
                     <div class="card-header bg-white py-3 border-0">
                         <h5 class="card-title mb-0 fw-bold text-dark">
                             <i class="fa fa-bolt text-warning me-2"/> QUICK ACTIONS &amp; SHORTCUTS
@@ -332,7 +332,7 @@
                 </div>
 
                 <!-- TIER 4: TEAM WORKLOAD MATRIX (MANAGER & CEO VIEW) -->
-                <div t-if="state.data.role === 'ceo' || state.data.role === 'operations'" class="card shadow-sm border-0 mb-4">
+                <div t-if="state.data.widget_permissions.team_workload" class="card shadow-sm border-0 mb-4">
                     <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center">
                         <h5 class="card-title mb-0 fw-bold text-dark">
                             <i class="fa fa-users text-primary me-2"/> TEAM WORKLOAD MATRIX
@@ -379,9 +379,9 @@
                 </div>
 
                 <!-- TIER 5: PERFORMANCE & FINANCIAL ANALYTICS -->
-                <div class="row g-4 mb-4">
+                <div t-if="state.data.widget_permissions.sales_by_service || state.data.widget_permissions.sales_by_staff" class="row g-4 mb-4">
                     <!-- Sales by Service -->
-                    <div class="col-12 col-lg-6">
+                    <div t-if="state.data.widget_permissions.sales_by_service" class="col-12 col-lg-6">
                         <div class="card shadow-sm border-0 h-100">
                             <div class="card-header bg-white py-3 border-0">
                                 <h5 class="card-title mb-0 fw-bold text-dark">
@@ -411,7 +411,7 @@
                     </div>
 
                     <!-- Salesperson Performance -->
-                    <div class="col-12 col-lg-6">
+                    <div t-if="state.data.widget_permissions.sales_by_staff" class="col-12 col-lg-6">
                         <div class="card shadow-sm border-0 h-100">
                             <div class="card-header bg-white py-3 border-0">
                                 <h5 class="card-title mb-0 fw-bold text-dark">
