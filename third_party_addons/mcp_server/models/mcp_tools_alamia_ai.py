@@ -94,10 +94,20 @@ class McpToolsAlamiaAi(models.AbstractModel):
         if partner_id:
             partner = Partner.browse(partner_id)
         elif name:
+            # 1. Search full name ilike
             partner = Partner.search([("name", "ilike", name)], limit=1)
+            # 2. Token fallback search
+            if not partner:
+                for token in name.split():
+                    if len(token) > 2:
+                        partner = Partner.search([("name", "ilike", token)], limit=1)
+                        if partner:
+                            break
 
         if not partner or not partner.exists():
-            raise MissingError(_("Customer record not found."))
+            sample_customers = Partner.search([("is_travel_customer", "=", True)], limit=5).mapped("name")
+            sample_txt = f" Available customers include: {', '.join(sample_customers)}." if sample_customers else ""
+            raise MissingError(_(f"Customer record '{name}' not found.{sample_txt}"))
 
         # Query bookings
         sales = self.env["travel.sale"].search([

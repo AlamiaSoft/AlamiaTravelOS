@@ -116,7 +116,7 @@ export class AlamiaAiCopilot extends Component {
 
     async onSearchCustomer360(queryName) {
         try {
-            const cleanName = queryName.replace(/search|customer|360|show|find|for/gi, "").trim() || queryName;
+            const cleanName = queryName.replace(/\b(search|customer|360|show|find|for|dossier)\b/gi, "").trim() || queryName;
             const res = await this.orm.call("mcp.mixin", "get_customer_360", [], { name: cleanName });
             const payload = res.structuredContent || {};
 
@@ -133,7 +133,7 @@ export class AlamiaAiCopilot extends Component {
                 payload
             );
         } catch (error) {
-            this.addSystemMessage(`⚠️ Customer search for "${queryName}" yielded no matching records. Try typing an exact customer name.`);
+            this.addSystemMessage(`⚠️ ${error.message || "Customer search yielded no matching records."}`);
         }
     }
 
