@@ -1,6 +1,9 @@
 .o_travel_dashboard {
     background-color: #f8f9fa;
-    min-height: 100vh;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-bottom: 5rem;
 
     .kpi-card {
         cursor: pointer;

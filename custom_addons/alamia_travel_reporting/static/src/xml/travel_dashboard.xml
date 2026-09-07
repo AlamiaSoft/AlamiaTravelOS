@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates id="template" xml:space="preserve">
     <t t-name="alamia_travel_reporting.TravelDashboard">
-        <div class="o_travel_dashboard o_action p-4">
+        <div class="o_travel_dashboard o_action p-4 pb-5">
             <!-- Header -->
             <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom bg-white p-3 rounded shadow-sm">
                 <div>
