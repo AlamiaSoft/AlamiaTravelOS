@@ -42,6 +42,6 @@
                   name="Schedule Task / To-Do"
                   parent="alamia_travel_core.menu_travel_os_root"
                   action="action_travel_schedule_activity_wizard"
-                  sequence="2"/>
+                  sequence="90"/>
     </data>
 </odoo>

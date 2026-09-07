@@ -41,7 +41,7 @@
                   name="Dashboard"
                   parent="alamia_travel_core.menu_travel_os_root"
                   action="action_travel_dashboard_main"
-                  sequence="5"/>
+                  sequence="1"/>
 
         <!-- Role-Specific Menus under Reporting / Dashboards -->
         <menuitem id="menu_travel_dashboard_ceo"

@@ -13,7 +13,7 @@
                   name="Alamia Travels AI"
                   parent="alamia_travel_core.menu_travel_os_root"
                   action="action_alamia_ai_copilot"
-                  sequence="6"/>
+                  sequence="2"/>
 
         <!-- Operational Menu Item under Operations -->
         <menuitem id="menu_alamia_ai_copilot_ops"
