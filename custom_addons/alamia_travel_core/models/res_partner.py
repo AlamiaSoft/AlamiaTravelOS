@@ -29,9 +29,11 @@ class ResPartner(models.Model):
     agent_code = fields.Char("Agent Code")
     default_commission_rate = fields.Float("Default Commission %", default=0.0)
 
+    currency_id = fields.Many2one('res.currency', string="Currency", default=lambda self: self.env.company.currency_id)
     total_agent_sales_count = fields.Integer(string="Total Sales", compute="_compute_agent_stats")
-    total_agent_sales_amount = fields.Float(string="Total Sales Amount", compute="_compute_agent_stats")
-    total_agent_commission_amount = fields.Float(string="Total Commission Earned", compute="_compute_agent_stats")
+    total_agent_sales_amount = fields.Monetary(string="Total Sales Amount", compute="_compute_agent_stats", currency_field="currency_id")
+    total_agent_commission_amount = fields.Monetary(string="Total Commission Earned", compute="_compute_agent_stats", currency_field="currency_id")
+
 
     def _compute_agent_stats(self):
         for partner in self:
