@@ -19,6 +19,7 @@
         'views/service_catalog_views.xml',
         'views/res_partner_views.xml',
         'wizard/travel_data_import_wizard_views.xml',
+        'wizard/travel_schedule_activity_wizard_views.xml',
     ],
     'installable': True,
     'application': True,

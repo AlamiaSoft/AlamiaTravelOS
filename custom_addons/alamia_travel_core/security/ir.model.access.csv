@@ -7,4 +7,5 @@ access_travel_service_package_user,travel.service.package.user,model_travel_serv
 access_travel_service_package_manager,travel.service.package.manager,model_travel_service_package,group_travel_manager,1,1,1,1
 access_travel_service_package_line_user,travel.service.package.line.user,model_travel_service_package_line,base.group_user,1,0,0,0
 access_travel_service_package_line_manager,travel.service.package.line.manager,model_travel_service_package_line,group_travel_manager,1,1,1,1
+access_travel_schedule_activity_wizard_user,travel.schedule.activity.wizard.user,model_travel_schedule_activity_wizard,base.group_user,1,1,1,1
 

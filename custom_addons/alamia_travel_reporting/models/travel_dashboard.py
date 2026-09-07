@@ -302,9 +302,12 @@ class TravelDashboard(models.AbstractModel):
             'kpis': get_widget_perm(f'alamia_travel.dashboard_show_kpis_{role}', True),
         }
 
+        is_financial_role = is_ceo or is_admin
+
         # Construct Final Role Payload
         data = {
             'role': role,
+            'is_financial_role': is_financial_role,
             'user_name': user.name,
             'currency_symbol': currency_symbol,
             'widget_permissions': widget_permissions,
@@ -321,22 +324,22 @@ class TravelDashboard(models.AbstractModel):
             'team_workload': team_workload,
             'attention_items': attention_items,
             'kpis': {
-                'today_sales': sum(today_sales.mapped('total_selling_amount')),
+                'today_sales': sum(today_sales.mapped('total_selling_amount')) if is_financial_role else 0.0,
                 'today_sales_count': len(today_sales),
-                'today_collections': today_collections_total,
-                'monthly_sales': sum(month_sales.mapped('total_selling_amount')),
+                'today_collections': today_collections_total if is_financial_role else 0.0,
+                'monthly_sales': sum(month_sales.mapped('total_selling_amount')) if is_financial_role else 0.0,
                 'monthly_sales_count': len(month_sales),
-                'monthly_gross_profit': sum(month_sales.mapped('gross_profit')),
-                'total_receivables': total_receivables,
-                'total_payables': total_payables,
-                'cash_position': cash_position,
-                'bank_position': bank_position,
+                'monthly_gross_profit': sum(month_sales.mapped('gross_profit')) if is_financial_role else 0.0,
+                'total_receivables': total_receivables if is_financial_role else 0.0,
+                'total_payables': total_payables if is_financial_role else 0.0,
+                'cash_position': cash_position if is_financial_role else 0.0,
+                'bank_position': bank_position if is_financial_role else 0.0,
                 'my_today_sales': sum(my_today_sales.mapped('total_selling_amount')),
                 'my_month_sales': sum(my_month_sales.mapped('total_selling_amount')),
                 'pending_transactions_count': pending_transactions_count,
             },
-            'sales_by_service': sales_by_service,
-            'sales_by_staff': sales_by_staff,
+            'sales_by_service': sales_by_service if is_financial_role else [],
+            'sales_by_staff': sales_by_staff if is_financial_role else [],
             'outstanding_customers': outstanding_customers,
             'recent_sales': recent_sales,
             'workload': workload,

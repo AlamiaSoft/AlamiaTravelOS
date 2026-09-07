@@ -100,6 +100,12 @@ export class TravelDashboard extends Component {
         });
     }
 
+    openScheduleTaskWizard() {
+        this.action.doAction("alamia_travel_core.action_travel_schedule_activity_wizard", {
+            onClose: () => this.loadDashboardData(),
+        });
+    }
+
     openSales(domain, name) {
         this.action.doAction({
             type: "ir.actions.act_window",

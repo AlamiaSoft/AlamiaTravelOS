@@ -276,3 +276,50 @@ class TestPhase2Features(TransactionCase):
         self.assertIn(menu_config, ali_visible, "Ali should have access to Configuration menu.")
         self.assertIn(menu_finance, ali_visible, "Ali should have access to Finance menu.")
         self.assertIn(menu_dash_settings, ali_visible, "Ali should have access to Dashboard Settings menu.")
+
+    def test_09_task_schedule_wizard_flow(self):
+        """ Verify CEO/Manager can schedule and assign a task to staff via wizard """
+        from datetime import date
+        today = date.today()
+        user_kamal = self.env.ref('alamia_travel_core.user_kamal')
+        user_tayyab = self.env.ref('alamia_travel_core.user_tayyab')
+        act_type = self.env['mail.activity.type'].search([], limit=1)
+
+        wizard = self.env['travel.schedule.activity.wizard'].with_user(user_kamal).create({
+            'user_id': user_tayyab.id,
+            'activity_type_id': act_type.id,
+            'summary': 'Urgent Visa Clearance Check',
+            'date_deadline': today,
+            'partner_id': self.customer.id,
+            'note': 'Please verify visa approval with Saudi Ministry portal',
+        })
+
+        res = wizard.action_schedule_task()
+        self.assertEqual(res.get('type'), 'ir.actions.client')
+
+        # Verify activity created and assigned to Tayyab
+        act = self.env['mail.activity'].search([
+            ('res_model', '=', 'res.partner'),
+            ('res_id', '=', self.customer.id),
+            ('user_id', '=', user_tayyab.id),
+            ('summary', '=', 'Urgent Visa Clearance Check'),
+        ])
+        self.assertTrue(act.exists(), "Activity should be created and assigned to Tayyab.")
+
+    def test_10_financial_data_scoping_per_role(self):
+        """ Verify financial data scoping: CEO sees financial metrics; Ops/Marketing is stripped """
+        user_kamal = self.env.ref('alamia_travel_core.user_kamal')
+        user_tayyab = self.env.ref('alamia_travel_core.user_tayyab')
+
+        Dashboard = self.env['travel.dashboard']
+
+        # CEO Dashboard Payload
+        ceo_data = Dashboard.with_user(user_kamal).get_dashboard_data('ceo')
+        self.assertTrue(ceo_data.get('is_financial_role'), "CEO should be identified as financial role.")
+
+        # Tayyab (Ops & Marketing) Dashboard Payload
+        tayyab_data = Dashboard.with_user(user_tayyab).get_dashboard_data('ops_marketing')
+        self.assertFalse(tayyab_data.get('is_financial_role'), "Ops & Marketing should NOT be identified as financial role.")
+        self.assertEqual(tayyab_data['kpis'].get('monthly_gross_profit'), 0.0, "Gross profit must be stripped for non-financial roles.")
+        self.assertEqual(tayyab_data['kpis'].get('cash_position'), 0.0, "Cash position must be stripped for non-financial roles.")
+        self.assertEqual(tayyab_data.get('sales_by_service'), [], "Sales by service list must be empty for non-financial roles.")

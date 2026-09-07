@@ -13,6 +13,9 @@
                     </p>
                 </div>
                 <div class="d-flex gap-2">
+                    <button class="btn btn-success btn-sm" t-on-click="openScheduleTaskWizard">
+                        <i class="fa fa-plus-circle me-1"/> Schedule Task
+                    </button>
                     <button class="btn btn-outline-primary btn-sm" t-on-click="loadDashboardData">
                         <i class="fa fa-refresh me-1"/> Refresh
                     </button>
@@ -379,7 +382,7 @@
                 </div>
 
                 <!-- TIER 5: PERFORMANCE & FINANCIAL ANALYTICS -->
-                <div t-if="state.data.widget_permissions.sales_by_service || state.data.widget_permissions.sales_by_staff" class="row g-4 mb-4">
+                <div t-if="state.data.is_financial_role &amp;&amp; (state.data.widget_permissions.sales_by_service || state.data.widget_permissions.sales_by_staff)" class="row g-4 mb-4">
                     <!-- Sales by Service -->
                     <div t-if="state.data.widget_permissions.sales_by_service" class="col-12 col-lg-6">
                         <div class="card shadow-sm border-0 h-100">
