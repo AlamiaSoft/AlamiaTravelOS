@@ -1,25 +1,26 @@
-# Backlog — Pending Tasks & Next Sprint Objectives
+# Backlog — Pending Tasks & Next Phase Objectives
 
-## Immediate Next Sprint Objectives (User Requested)
+## Completed Core Phase 2 Objectives
 
-- [ ] **Default Login Landing Page**: Configure TravelOS Executive/Role Dashboard as default landing app after login (replacing default Discuss app).
-- [ ] **Expenses Management Screens**: Dedicated views for Office Expenses, Categories, Payees, and Expense Approvals.
-- [ ] **Services / Products / Subscriptions Management Screens**: Expanded catalog management for travel services, package subscriptions, and service pricing tiers.
-- [ ] **Sub-Agents & Partners Management Screens**: Comprehensive Partner & Sub-Agent views, commission tracking, and partner settlement ledgers.
-- [ ] **Advanced Accounting & Finance Features**: Aged Receivables/Payables, Financial Statements, Journal Entries, and Cash/Bank Position tracking.
-
----
-
-## Priority: Medium
-
-- [ ] Verify production deployment on VPS (`travels.alamiaconnect.com`) via Portainer.
-- [ ] Test Odoo chat WebSocket passthrough (port 8072) behind Nginx/Cloudflare Tunnel in production.
-- [ ] Document MCP server rate limiting thresholds and tuning.
-- [ ] Verify `scripts/backup.sh` cron job runs correctly on VPS.
+- [x] **Default Login Landing Page**: Configured TravelOS Executive/Role Dashboard as default landing app after login.
+- [x] **Expenses Management Screens**: Created `travel.expense.category` and `travel.expense` views under `Travel OS -> Expenses`.
+- [x] **Services & Package Bundles**: Extended `travel.service.catalog` with selling prices, costs, margin %, and `travel.service.package`.
+- [x] **Sub-Agents & Partners Management**: Partner extension with `is_travel_agent`, `agent_code`, default commission rate %, and live sales/commission stats under `Travel OS -> Operations -> Sub-Agents & Partners`.
+- [x] **Role-Based Navigation Menu Tailoring**: Enforced menu access security matrix across Configuration, Finance, Reporting, and Operations.
+- [x] **Global Task / To-Do Scheduling Shortcut**: 1-click popup wizard (`travel.schedule.activity.wizard`) accessible via top navbar and dashboard header.
+- [x] **Financial Data Security Scoping**: Executive financial metrics (revenue, profit margins %, net income) restricted to `ceo` and `admin` roles.
+- [x] **OCA Financial Reports Integration**: Integrated official `account_financial_report` suite under `Travel OS -> Finance -> Accounting Reports` (Balance Sheet, P&L, Trial Balance, General Ledger, Partner Ledgers).
 
 ---
 
-## Priority: Low
+## Pending Items & Next Phase Objectives
 
-- [ ] Populate remaining ADRs for architectural decisions.
-- [ ] Document scaling considerations (multiple web containers behind load balancer).
+### 1. VPS Production UAT & Verification
+- [ ] **VPS Portainer Redeploy Verification**: Confirm pull on `travels.alamiaconnect.com` renders new menu items, task wizard, and financial reports.
+- [ ] **Live Chat WebSocket Passthrough (Port 8072)**: Verify bus notifications over Cloudflare Tunnel in production.
+- [ ] **Automated Backup Cron (`scripts/backup.sh`)**: Confirm daily PostgreSQL & Filestore backups execute cleanly on VPS.
+
+### 2. Operational Enhancements (Phase 3 Considerations)
+- [ ] **Customer WhatsApp / SMS Reminders**: Automated payment and booking status alerts sent to customers.
+- [ ] **Passport & Visa Expiry Alerts**: Automated activity generation when customer travel documents approach expiry.
+- [ ] **Sub-Agent Portal Ledger**: Dedicated portal view for sub-agents to view booking statuses and commission balances.
