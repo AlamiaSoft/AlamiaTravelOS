@@ -14,7 +14,7 @@ AlamiaTravelOS is an active Odoo 19 Docker project with all core sprints, histor
 
 2. **Deterministic Business Fact Tools & Action Tools (`mcp_tools_alamia_ai.py`)**
    - **`get_employee_profile`**: Bootstraps user profile, allowed skills, and tool catalog filter.
-   - **`get_customer_360`**: Returns raw structured customer facts (LTV, active bookings count, active bookings list, unpaid balances, activities).
+   - **`get_customer_360`**: Returns raw structured customer facts (LTV, active bookings count, active bookings list, unpaid balances, activities). Fixed AttributeError by using safe `getattr(partner, "mobile", False)` lookup.
    - **`get_booking_360`**: Returns raw structured booking facts (`KE-XXXXX`, customer, passenger list, service catalog lines, payment shortfall).
    - **`get_work_items`**: Returns raw operational priority queue (`critical`, `attention`, `routine`).
    - **`get_booking_profitability`**: Line-by-line revenue, supplier costs, commissions, gross profit, and margin %.
@@ -25,10 +25,10 @@ AlamiaTravelOS is an active Odoo 19 Docker project with all core sprints, histor
    - Model-supplied `role`, `permissions`, or `risk_level` are **strictly ignored**.
    - `ActionStateMachine.validate_action_authorization` resolves registered `ActionDefinition` from `action_type` and strictly checks user identity, role allowed list, and Odoo security groups before execution.
 
-4. **Automated Unit Testing & Developer Guide**
-   - Created `custom_addons/alamia_travel_reporting/tests/test_alamia_travels_ai.py` verifying session bootstrap, customer/booking facts, profitability, work items, idempotency duplicate rejection, and security access rejection (`sales_assistant` posting invoice rejected with `AccessError`).
+4. **Automated Unit Testing & Session Handoff**
+   - Verified full integration test suite (`custom_addons/alamia_travel_reporting/tests/test_alamia_travels_ai.py`).
    - All 40 automated integration tests passed clean (`0 failed, 0 errors`).
-   - Updated `docs/mcp-copilot-guide.md` with section 6 documenting profile bootstrapping, business fact tools, action proposals, and chatter audit trails.
+   - Created Session 4 Handoff document (`.ai/transient/handoffs/session-4-alamia-ai-copilot.md`).
 
 ---
 
@@ -36,3 +36,4 @@ AlamiaTravelOS is an active Odoo 19 Docker project with all core sprints, histor
 - **Local Dev**: Docker Compose on port 8069 (`alamiatravelos_web`, `alamiatravelos_db`).
 - **VPS Target**: `travels.alamiaconnect.com` (Cloudflare Tunnel → Docker Portainer stack pull from GitHub `main`).
 - **Database Name**: `alamiatravelos`
+- **Latest Commit**: `d56d8f2` on `main`
