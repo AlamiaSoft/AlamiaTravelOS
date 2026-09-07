@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Client Action for Alamia Travels AI Copilot UI -->
+        <record id="action_alamia_ai_copilot" model="ir.actions.client">
+            <field name="name">Alamia Travels AI</field>
+            <field name="tag">alamia_ai_copilot_client_action</field>
+            <field name="context">{}</field>
+        </record>
+
+        <!-- Top Level Navigation Menu Item: Travel OS -> Alamia Travels AI -->
+        <menuitem id="menu_alamia_ai_copilot"
+                  name="Alamia Travels AI"
+                  parent="alamia_travel_core.menu_travel_os_root"
+                  action="action_alamia_ai_copilot"
+                  sequence="6"/>
+
+        <!-- Operational Menu Item under Operations -->
+        <menuitem id="menu_alamia_ai_copilot_ops"
+                  name="Alamia Travels AI Assistant"
+                  parent="alamia_travel_core.menu_travel_operations"
+                  action="action_alamia_ai_copilot"
+                  sequence="10"/>
+    </data>
+</odoo>

@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="alamia_travel_reporting.AlamiaAiCopilot">
+        <div class="o_alamia_ai_copilot d-flex flex-column h-100 bg-light">
+            
+            <!-- 1. TOP HERO HEADER -->
+            <div class="o_copilot_header bg-white border-bottom px-4 py-3 shadow-sm d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="avatar_icon bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold fs-4" style="width: 48px; height: 48px;">
+                        🤖
+                    </div>
+                    <div>
+                        <h4 class="mb-0 fw-bold text-dark">Alamia Travels AI Employee</h4>
+                        <div class="d-flex align-items-center gap-2 mt-1">
+                            <span class="badge bg-primary text-wrap" t-esc="state.userProfile?.role_profile?.name || 'AI Operations Assistant'"/>
+                            <span class="text-muted small">• Active User: <strong t-esc="state.userProfile?.user?.name || ''"/></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center gap-2">
+                    <button class="btn btn-outline-primary btn-sm" t-on-click="() => this.onDailyBriefing()">
+                        🌅 Daily Briefing
+                    </button>
+                    <button class="btn btn-outline-secondary btn-sm" t-on-click="() => this.loadProfile()">
+                        🔄 Refresh Profile
+                    </button>
+                </div>
+            </div>
+
+            <!-- 2. QUICK ACTION TOOLBAR -->
+            <div class="o_copilot_toolbar bg-white border-bottom px-4 py-2 d-flex flex-wrap gap-2 align-items-center">
+                <span class="text-muted small fw-semibold me-2">Quick Actions:</span>
+                <button class="btn btn-sm btn-light border" t-on-click="() => this.onDailyBriefing()">
+                    📋 Work Queue
+                </button>
+                <button class="btn btn-sm btn-light border" t-on-click="() => this.onSearchCustomer360('Syed Kamal Ahmed')">
+                    👤 Customer 360
+                </button>
+                <button class="btn btn-sm btn-light border" t-on-click="() => this.onSearchBooking360('KE-2026-00001')">
+                    🕋 Booking 360
+                </button>
+                <button class="btn btn-sm btn-light border" t-on-click="() => this.onBookingProfitability('KE-2026-00001')">
+                    📊 Profitability
+                </button>
+            </div>
+
+            <!-- 3. MAIN WORKSPACE CONTAINER -->
+            <div class="o_copilot_body flex-grow-1 p-4 overflow-hidden">
+                <div class="row h-100 g-3">
+                    
+                    <!-- LEFT COLUMN: CHAT & COMMAND CONSOLE -->
+                    <div class="col-md-6 col-lg-7 d-flex flex-column h-100">
+                        <div class="card flex-grow-1 shadow-sm border-0 d-flex flex-column overflow-hidden">
+                            <div class="card-header bg-white border-bottom py-3">
+                                <h6 class="mb-0 fw-bold text-dark">Conversational Console</h6>
+                            </div>
+                            
+                            <!-- Chat Messages Feed -->
+                            <div class="card-body overflow-auto flex-grow-1 p-3 d-flex flex-column gap-3">
+                                <t t-foreach="state.messages" t-as="msg" t-key="msg.id">
+                                    <div t-attf-class="d-flex flex-column {{ msg.sender === 'user' ? 'align-items-end' : 'align-items-start' }}">
+                                        <div t-attf-class="message_bubble p-3 rounded-3 max-w-75 {{ msg.sender === 'user' ? 'bg-primary text-white' : 'bg-white border shadow-sm text-dark' }}">
+                                            <div class="small fw-bold mb-1 opacity-75">
+                                                <t t-if="msg.sender === 'user'">You</t>
+                                                <t t-else="">🤖 Alamia AI Assistant</t>
+                                                <span class="ms-2 opacity-50 fw-normal" t-esc="msg.timestamp"/>
+                                            </div>
+                                            <div class="message_text" style="white-space: pre-line;" t-esc="msg.text"/>
+                                        </div>
+                                    </div>
+                                </t>
+                            </div>
+
+                            <!-- Input Console Footer -->
+                            <div class="card-footer bg-white border-top p-3">
+                                <div class="input-group">
+                                    <input type="text"
+                                           class="form-control form-control-lg border-end-0"
+                                           placeholder="Ask Alamia AI e.g. 'Show Customer 360', 'Booking KE-2026-00001'..."
+                                           t-model="state.searchQuery"
+                                           t-on-keydown="(e) => e.key === 'Enter' &amp;&amp; this.onSendMessage()"/>
+                                    <button class="btn btn-primary px-4" type="button" t-on-click="() => this.onSendMessage()">
+                                        Send 🚀
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- RIGHT COLUMN: FACT DOSSIER & ACTION CARDS -->
+                    <div class="col-md-6 col-lg-5 d-flex flex-column h-100 overflow-auto">
+                        
+                        <!-- PENDING ACTION PROPOSAL CARD -->
+                        <t t-if="state.pendingProposal">
+                            <div class="card border-warning shadow-sm mb-3">
+                                <div class="card-header bg-warning text-dark fw-bold d-flex align-items-center justify-content-between">
+                                    <span>⚡ Pending Action Proposal</span>
+                                    <span class="badge bg-dark" t-esc="state.pendingProposal.action_id"/>
+                                </div>
+                                <div class="card-body">
+                                    <h6 class="fw-bold" t-esc="state.pendingProposal.action_type"/>
+                                    <p class="text-muted small mb-2" t-esc="state.pendingProposal.reason"/>
+                                    <div class="bg-light p-2 rounded small mb-3">
+                                        <div><strong>Target:</strong> <t t-esc="state.pendingProposal.target?.model"/>, ID <t t-esc="state.pendingProposal.target?.id"/></div>
+                                        <div><strong>Risk Level:</strong> <span class="badge bg-secondary" t-esc="state.pendingProposal.risk_level"/></div>
+                                        <div><strong>Requires Confirmation:</strong> <t t-esc="state.pendingProposal.requires_confirmation ? 'Yes' : 'No'"/></div>
+                                    </div>
+                                    <div class="d-flex gap-2">
+                                        <button class="btn btn-success btn-sm flex-grow-1" t-on-click="() => this.onConfirmProposal()">
+                                            ✅ Confirm &amp; Execute
+                                        </button>
+                                        <button class="btn btn-outline-danger btn-sm" t-on-click="() => this.onRejectProposal()">
+                                            ❌ Reject
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+
+                        <!-- CUSTOMER 360 DOSSIER CARD -->
+                        <t t-if="state.activeDossier === 'customer' &amp;&amp; state.dossierData">
+                            <div class="card border-0 shadow-sm mb-3">
+                                <div class="card-header bg-white fw-bold border-bottom">
+                                    👤 Customer 360 Dossier
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="fw-bold text-primary mb-1" t-esc="state.dossierData.customer?.name"/>
+                                    <p class="text-muted small mb-3">
+                                        📞 <t t-esc="state.dossierData.customer?.phone || 'No Phone'"/> | 
+                                        💬 <t t-esc="state.dossierData.customer?.whatsapp_number || 'No WhatsApp'"/>
+                                    </p>
+
+                                    <div class="row g-2 text-center mb-3">
+                                        <div class="col-6">
+                                            <div class="p-2 bg-light rounded border">
+                                                <div class="small text-muted">Lifetime Spent</div>
+                                                <div class="fw-bold text-dark">PKR <t t-esc="(state.dossierData.metrics?.lifetime_spent || 0).toLocaleString()"/></div>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="p-2 bg-light rounded border">
+                                                <div class="small text-muted">Active Bookings</div>
+                                                <div class="fw-bold text-primary" t-esc="state.dossierData.metrics?.active_bookings_count || 0"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+
+                        <!-- BOOKING 360 DOSSIER CARD -->
+                        <t t-if="state.activeDossier === 'booking' &amp;&amp; state.dossierData">
+                            <div class="card border-0 shadow-sm mb-3">
+                                <div class="card-header bg-white fw-bold border-bottom">
+                                    🕋 Booking 360 Overview
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <h5 class="fw-bold mb-0" t-esc="state.dossierData.booking?.name"/>
+                                        <span class="badge bg-info" t-esc="state.dossierData.booking?.state"/>
+                                    </div>
+                                    <p class="text-muted small mb-3">Customer: <strong><t t-esc="state.dossierData.booking?.customer_name"/></strong></p>
+
+                                    <div class="p-3 bg-light rounded border mb-3">
+                                        <div class="d-flex justify-content-between mb-1">
+                                            <span>Total Amount:</span>
+                                            <strong class="text-dark">PKR <t t-esc="(state.dossierData.financials?.amount_total || 0).toLocaleString()"/></strong>
+                                        </div>
+                                        <div class="d-flex justify-content-between text-danger">
+                                            <span>Payment Shortfall:</span>
+                                            <strong>PKR <t t-esc="(state.dossierData.financials?.payment_shortfall || 0).toLocaleString()"/></strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+
+                        <!-- BOOKING PROFITABILITY CARD -->
+                        <t t-if="state.activeDossier === 'profitability' &amp;&amp; state.dossierData">
+                            <div class="card border-0 shadow-sm mb-3">
+                                <div class="card-header bg-white fw-bold border-bottom">
+                                    📊 Booking Profitability Calculation
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="fw-bold mb-3" t-esc="state.dossierData.booking?.name"/>
+
+                                    <div class="p-3 bg-light rounded border mb-3">
+                                        <div class="d-flex justify-content-between mb-1">
+                                            <span>Total Revenue:</span>
+                                            <strong class="text-dark">PKR <t t-esc="(state.dossierData.profitability?.revenue || 0).toLocaleString()"/></strong>
+                                        </div>
+                                        <div class="d-flex justify-content-between mb-1 text-muted">
+                                            <span>Total Cost:</span>
+                                            <span>PKR <t t-esc="(state.dossierData.profitability?.total_supplier_cost || 0).toLocaleString()"/></span>
+                                        </div>
+                                        <hr class="my-2"/>
+                                        <div class="d-flex justify-content-between fw-bold text-success fs-5">
+                                            <span>Gross Profit:</span>
+                                            <span>PKR <t t-esc="(state.dossierData.profitability?.gross_profit || 0).toLocaleString()"/></span>
+                                        </div>
+                                        <div class="text-end text-muted small">
+                                            Margin: <strong><t t-esc="state.dossierData.profitability?.margin_percentage"/>%</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+
+                        <!-- SCHEDULE FOLLOW-UP FORM CARD -->
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-header bg-white fw-bold border-bottom">
+                                ⚡ Schedule Activity / Action Proposal
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-2">
+                                    <label class="form-label small text-muted">Target Model</label>
+                                    <select class="form-select form-select-sm" t-model="state.followupForm.res_model">
+                                        <option value="res.partner">Customer (res.partner)</option>
+                                        <option value="travel.sale">Booking (travel.sale)</option>
+                                    </select>
+                                </div>
+                                <div class="mb-2">
+                                    <label class="form-label small text-muted">Target Record ID</label>
+                                    <input type="number" class="form-control form-control-sm" placeholder="e.g. 1, 42" t-model="state.followupForm.res_id"/>
+                                </div>
+                                <div class="mb-2">
+                                    <label class="form-label small text-muted">Action Summary</label>
+                                    <input type="text" class="form-control form-control-sm" placeholder="e.g. Payment Follow-up Call" t-model="state.followupForm.summary"/>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label small text-muted">Notes</label>
+                                    <textarea class="form-control form-control-sm" rows="2" placeholder="Details..." t-model="state.followupForm.note"></textarea>
+                                </div>
+                                <button class="btn btn-primary btn-sm w-100" t-on-click="() => this.onProposeFollowup()">
+                                    ⚡ Propose Follow-up Action
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </t>
+
+</templates>

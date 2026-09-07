@@ -1,0 +1,26 @@
+.o_alamia_ai_copilot {
+    .o_copilot_header {
+        .avatar_icon {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+    }
+
+    .o_copilot_toolbar {
+        button {
+            transition: all 0.2s ease-in-out;
+            &:hover {
+                background-color: #f1f5f9;
+                border-color: #cbd5e1;
+            }
+        }
+    }
+
+    .message_bubble {
+        line-height: 1.5;
+        font-size: 0.95rem;
+    }
+
+    .max-w-75 {
+        max-width: 75%;
+    }
+}
