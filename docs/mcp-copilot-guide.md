@@ -116,3 +116,24 @@ Once connected, you can ask your AI Copilot questions like:
 - **Customers**: *"Find customer contact details for Syed Kamal Ahmed."*
 - **Services**: *"What is the selling price and cost of 14-Day Umrah Quad Package?"*
 - **Task Scheduling**: *"Schedule a To-Do activity for Jawad on customer Ali Raza regarding payment clearance."*
+
+---
+
+## 6. Alamia AI Employee Runtime — Business Fact Tools & Action Proposals
+
+The **Alamia AI Employee Runtime** exposes domain-aware Business Fact Tools and Action Tools for AI Assistants (`ceo_assistant`, `operations_assistant`, `sales_assistant`, `accounting_assistant`, `ticketing_assistant`).
+
+### Session Bootstrap
+- **`get_employee_profile`**: First call in an AI session to bootstrap user identity, role profile, allowed skills, allowed tools, and session context.
+
+### Business Fact Tools (Deterministic JSON Output)
+- **`get_customer_360`**: Single-call 360° customer dossier (lifetime spent, active bookings, payment shortfall, activities).
+- **`get_booking_360`**: Single-call 360° booking state (`KE-XXXXX`) detailing passengers, visa state, service lines, and payment shortfall.
+- **`get_work_items`**: Raw operational priority queue filtered by user role and urgency (`critical`, `attention`, `routine`).
+- **`get_booking_profitability`**: Line-by-line revenue, supplier costs, commissions, gross profit, and margin %.
+
+### Action Tools & Security
+- **`propose_action`**: Generates a validated `ActionProposal` payload (`action_id`, `idempotency_key`, `risk_level`, `requires_confirmation`).
+- **`create_followup`**: Level 1 write tool that creates `mail.activity` and posts an automated chatter audit log entry (`"Action executed via Alamia Travels AI by User X"`).
+- **Backend-Derived Security**: Role permissions, risk levels, and confirmation policies are strictly derived and enforced by the backend (`ActionStateMachine`).
+

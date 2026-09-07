@@ -11,3 +11,9 @@ from . import oauth_client
 from . import oauth_token
 from . import res_config_settings
 from . import res_users_apikeys
+from . import alamia_ai_registry
+from . import alamia_ai_context
+from . import alamia_ai_events
+from . import alamia_ai_actions
+from . import mcp_tools_alamia_ai
+

@@ -1,42 +1,34 @@
 # Current State — AlamiaTravelOS
 
 ## Project Status
-AlamiaTravelOS is an active Odoo 19 Docker project with all core sprints, historical data migration, Phase 2 management views, role-based activity cockpits, dynamic widget settings matrices, global task scheduling shortcuts, financial data security scoping, and full OCA Financial Reporting integration complete.
+AlamiaTravelOS is an active Odoo 19 Docker project with all core sprints, historical data migration, Phase 2 management views, role-based activity cockpits, dynamic widget settings matrices, global task scheduling shortcuts, financial data security scoping, OCA Financial Reporting integration, and the **Alamia AI Employee Runtime** complete.
 
 ### Completed This Session
 
-1. **Role-Based Navigation Menu Security Tailoring**
-   - Implemented explicit group restrictions across top-level and sub-level navigation menus in `menus.xml`, `travel_sale_views.xml`, `travel_expense_views.xml`, `partner_agent_views.xml`, and `res_config_settings_views.xml`.
-   - **Configuration (`Travel OS -> Configuration`)**: Restricted to **Managers** (`group_travel_manager`) and **IT Director / Admin** (`group_travel_admin`).
-   - **Finance (`Travel OS -> Finance`)**: Restricted to **CEO**, **Operations Director**, **IT Director**, and **Financial Managers**.
-   - **Reporting (`Travel OS -> Reporting`)**: Restricted to Management & Executive roles.
-   - **Operations (`Travel OS -> Operations`)**: Accessible to all operational and sales staff.
+1. **Alamia AI Employee Runtime Architecture & Modular Components**
+   - Established generic, application-agnostic **Alamia AI Employee Runtime** with **TravelOS (Odoo 19)** serving as its first vertical plugin via the MCP Tool Adapter.
+   - Built **`models/alamia_ai_registry.py`**: First-class `SkillDefinition`, `RoleManifest`, and `SkillRegistry` mapping 5 AI Assistant profiles (`ceo_assistant`, `operations_assistant`, `sales_assistant`, `accounting_assistant`, `ticketing_assistant`) across 4 Skill Families (Customer, Booking, Finance, Productivity).
+   - Built **`models/alamia_ai_context.py`**: `EmployeeContext` tracking active session context and `get_employee_profile()` session bootstrap helper.
+   - Built **`models/alamia_ai_events.py`**: `EmployeeEvent` schema contract stub for proactive trigger alerts.
+   - Built **`models/alamia_ai_actions.py`**: Backend `ActionDefinition` catalog, first-class `ActionProposal` abstraction, and `ActionStateMachine` enforcing backend-derived access controls, risk levels, confirmation policies, and `idempotency_key` duplicate checks.
 
-2. **Global Task / To-Do Scheduling Shortcut UI/UX**
-   - Created top navbar shortcut menu `Travel OS -> Schedule Task / To-Do` (`menu_travel_schedule_task`).
-   - Added `+ Schedule Task` quick action button in the header of the Travel OS Dashboard.
-   - Built lightweight popup wizard `travel.schedule.activity.wizard` allowing managers and staff to schedule and assign tasks to self or team members (Kamal, Jawad, Ali, Tayyab, Zeeshan) with due dates, activity types, titles, and notes.
+2. **Deterministic Business Fact Tools & Action Tools (`mcp_tools_alamia_ai.py`)**
+   - **`get_employee_profile`**: Bootstraps user profile, allowed skills, and tool catalog filter.
+   - **`get_customer_360`**: Returns raw structured customer facts (LTV, active bookings count, active bookings list, unpaid balances, activities).
+   - **`get_booking_360`**: Returns raw structured booking facts (`KE-XXXXX`, customer, passenger list, service catalog lines, payment shortfall).
+   - **`get_work_items`**: Returns raw operational priority queue (`critical`, `attention`, `routine`).
+   - **`get_booking_profitability`**: Line-by-line revenue, supplier costs, commissions, gross profit, and margin %.
+   - **`propose_action`**: Generates a validated `ActionProposal` payload.
+   - **`create_followup`**: Level 1 write tool creating `mail.activity` and posting an automated chatter audit log entry.
 
-3. **Financial Data Scoping & CEO Accounting Access**
-   - Configured `is_financial_role` backend guard in `travel_dashboard.py` and `travel_dashboard.xml`.
-   - Financial numbers (Total Monthly Revenue, Profit Margin %, Net Income, Cash/Bank Positions) are strictly stripped and zeroed out for non-executive roles (`ops_marketing`, `sales`).
-   - Configured standard Odoo Invoicing permissions (`account.group_account_invoice`, `account.group_account_readonly`) on `travel_role_ceo` for CEO financial report access.
+3. **Backend-Derived Security Enforcement**
+   - Model-supplied `role`, `permissions`, or `risk_level` are **strictly ignored**.
+   - `ActionStateMachine.validate_action_authorization` resolves registered `ActionDefinition` from `action_type` and strictly checks user identity, role allowed list, and Odoo security groups before execution.
 
-4. **OCA Financial Reporting Suite Integration (`account_financial_report`)**
-   - Cloned and integrated official OCA 19.0 modules (`account_financial_report`, `date_range`, `report_xlsx`) into `third_party_addons/`.
-   - Organized reports menu under **Travel OS → Finance → Accounting Reports**:
-     - *Trial Balance & Balance Sheet*
-     - *General Ledger & Profit & Loss*
-     - *Journal Ledger*
-     - *Open Items & Receivables/Payables*
-     - *Aged Partner Balances*
-     - *VAT & Tax Report*
-   - Added `'account_financial_report'` dependency in `alamia_travel_finance/__manifest__.py` and configured `-i` and `-u` startup flags in `docker-compose.prod.yml` for 100% automated zero-command VPS deployments via Portainer.
-
-5. **Automated Testing & Git Deployment**
-   - Added security & workflow unit tests (`test_08_role_based_menu_visibility`, `test_09_task_schedule_wizard_flow`, `test_10_financial_data_scoping_per_role`) in `test_phase2_features.py`.
-   - All 33 automated integration tests passed clean (`0 failed, 0 errors`).
-   - Committed and pushed to GitHub `main` ([4cb1b84](https://github.com/AlamiaSoft/AlamiaTravelOS/commit/4cb1b84)).
+4. **Automated Unit Testing & Developer Guide**
+   - Created `custom_addons/alamia_travel_reporting/tests/test_alamia_travels_ai.py` verifying session bootstrap, customer/booking facts, profitability, work items, idempotency duplicate rejection, and security access rejection (`sales_assistant` posting invoice rejected with `AccessError`).
+   - All 40 automated integration tests passed clean (`0 failed, 0 errors`).
+   - Updated `docs/mcp-copilot-guide.md` with section 6 documenting profile bootstrapping, business fact tools, action proposals, and chatter audit trails.
 
 ---
 

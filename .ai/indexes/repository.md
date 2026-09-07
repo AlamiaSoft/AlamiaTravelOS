@@ -11,9 +11,10 @@
 | **Dashboards & Reporting** | `custom_addons/alamia_travel_reporting/` | `travel.dashboard` AbstractModel backend service + OWL component client action (`travel_dashboard.js`, `travel_dashboard.xml`, SCSS). |
 | **User Provisioning & Roles** | `custom_addons/alamia_travel_core/data/users_data.xml`, `security/security.xml` | Provisioned users (Kamal, Jawad, Ali, Tayyab, Zeeshan). Role-based security matrix & implied permissions. |
 | **Third-Party Addons** | `third_party_addons/mcp_server/`, `third_party_addons/account_financial_report/`, `third_party_addons/date_range/`, `third_party_addons/report_xlsx/` | MCP Server + OCA Financial Reporting suite (Balance Sheet, P&L, Trial Balance, General Ledger, Partner Ledgers). |
+| **Alamia AI Employee Runtime** | `third_party_addons/mcp_server/models/alamia_ai_*.py`, `models/mcp_tools_alamia_ai.py` | Reusable AI Employee Platform with Skill Registry, Role Manifests (`ceo_assistant`, `operations_assistant`, `sales_assistant`, `accounting_assistant`, `ticketing_assistant`), EmployeeContext, Action Proposals, Idempotency tracking, and Business Fact Tools (`get_customer_360`, `get_booking_360`, `get_work_items`, `get_booking_profitability`). |
 | **MCP AI Copilot Guide** | [docs/mcp-copilot-guide.md](file:///e:/Alamia/AlamiaTravelOS/docs/mcp-copilot-guide.md) | Complete guide for connecting VS Code, GitHub Copilot, Claude Desktop, and AI agents to AlamiaTravelOS via MCP. |
 | **Task Scheduling Wizard** | `custom_addons/alamia_travel_core/wizard/travel_schedule_activity_wizard.py` | 1-click wizard for scheduling and assigning activities to self or team members via navbar menu or dashboard header. |
-| **Automated Tests** | `custom_addons/alamia_travel_finance/tests/`, `custom_addons/alamia_travel_reporting/tests/` | 5 Golden Financial Scenarios + 18 User/Role tests + 10 Phase 2/Menu/Wizard/Data Scoping tests (33 total integration tests). |
+| **Automated Tests** | `custom_addons/alamia_travel_reporting/tests/` | 5 Golden Financial Scenarios + 18 User/Role tests + 10 Phase 2 tests + 6 Alamia AI tests (40 total integration tests). |
 | **Management Scripts** | `scripts/setup_mcp.py` | Automated MCP server configuration script. |
 | **Dockerfile** | `Dockerfile` | Custom Odoo 19 image with Python dependencies (`phonenumbers`, `xlsxwriter`, `authlib`, etc.) and copied custom addons. |
 | **Environment Config** | `.env`, `.env.example`, `config/odoo.conf` | Runtime secrets & Odoo configuration (`proxy_mode=True`, `workers`, memory limits). |
@@ -44,9 +45,9 @@ AlamiaTravelOS/
 │   ├── alamiatravel_core/                # Master data, task wizard & security groups
 │   ├── alamiatravel_sales/               # Sales pipeline & sale lines
 │   ├── alamiatravel_finance/             # Accounting integration, settlements & golden scenario tests
-│   └── alamiatravel_reporting/           # Executive & role dashboards + permission tests
+│   └── alamiatravel_reporting/           # Executive & role dashboards + permission & AI tests
 ├── third_party_addons/                   # OCA/3rd-party modules
-│   ├── mcp_server/                       # MCP protocol + auth tools
+│   ├── mcp_server/                       # MCP protocol, auth tools & Alamia AI Employee Runtime
 │   ├── account_financial_report/         # OCA Financial Statements (Balance Sheet, P&L, Trial Balance)
 │   ├── date_range/                       # OCA Date Range management
 │   └── report_xlsx/                      # OCA Excel report generator
