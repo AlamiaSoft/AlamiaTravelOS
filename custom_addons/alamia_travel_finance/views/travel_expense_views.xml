@@ -138,7 +138,7 @@
                     <field name="state"/>
                     <templates>
                         <t t-name="card">
-                            <div class="oe_kanban_card oe_kanban_global_click">
+                            <main class="ps-2">
                                 <div class="row">
                                     <div class="col-8">
                                         <strong><field name="description"/></strong>
@@ -155,7 +155,7 @@
                                         <small><field name="date"/></small>
                                     </div>
                                 </div>
-                            </div>
+                            </main>
                         </t>
                     </templates>
                 </kanban>

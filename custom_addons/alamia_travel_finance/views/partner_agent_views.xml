@@ -51,25 +51,23 @@
                     <field name="total_agent_commission_amount"/>
                     <templates>
                         <t t-name="card">
-                            <div class="oe_kanban_card oe_kanban_global_click">
-                                <div class="row">
-                                    <div class="col-8">
-                                        <strong><field name="name"/></strong>
-                                        <div t-if="record.agent_code.raw_value" class="text-muted"><small>Code: <field name="agent_code"/></small></div>
-                                    </div>
-                                    <div class="col-4 text-end">
-                                        <span class="badge text-bg-info">Agent</span>
-                                    </div>
+                            <main class="ps-2">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <field name="name" class="fw-bold fs-5"/>
+                                    <span class="badge text-bg-info">Agent</span>
+                                </div>
+                                <div t-if="record.agent_code.raw_value" class="text-muted small">
+                                    Code: <field name="agent_code"/>
                                 </div>
                                 <div class="row mt-2 text-muted">
-                                    <div class="col-6">
-                                        <small>Sales: <field name="total_agent_sales_amount" widget="monetary"/></small>
+                                    <div class="col-6 small">
+                                        Sales: <field name="total_agent_sales_amount" widget="monetary"/>
                                     </div>
-                                    <div class="col-6 text-end">
-                                        <small>Comm: <field name="total_agent_commission_amount" widget="monetary"/></small>
+                                    <div class="col-6 text-end small">
+                                        Comm: <field name="total_agent_commission_amount" widget="monetary"/>
                                     </div>
                                 </div>
-                            </div>
+                            </main>
                         </t>
                     </templates>
                 </kanban>
