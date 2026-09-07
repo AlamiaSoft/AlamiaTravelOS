@@ -11,6 +11,7 @@
 | **Dashboards & Reporting** | `custom_addons/alamia_travel_reporting/` | `travel.dashboard` AbstractModel backend service + OWL component client action (`travel_dashboard.js`, `travel_dashboard.xml`, SCSS). |
 | **User Provisioning & Roles** | `custom_addons/alamia_travel_core/data/users_data.xml`, `security/security.xml` | Provisioned users (Kamal, Jawad, Ali, Tayyab, Zeeshan). Role-based security matrix & implied permissions. |
 | **Third-Party Addons** | `third_party_addons/mcp_server/`, `third_party_addons/account_financial_report/`, `third_party_addons/date_range/`, `third_party_addons/report_xlsx/` | MCP Server + OCA Financial Reporting suite (Balance Sheet, P&L, Trial Balance, General Ledger, Partner Ledgers). |
+| **MCP AI Copilot Guide** | [docs/mcp-copilot-guide.md](file:///e:/Alamia/AlamiaTravelOS/docs/mcp-copilot-guide.md) | Complete guide for connecting VS Code, GitHub Copilot, Claude Desktop, and AI agents to AlamiaTravelOS via MCP. |
 | **Task Scheduling Wizard** | `custom_addons/alamia_travel_core/wizard/travel_schedule_activity_wizard.py` | 1-click wizard for scheduling and assigning activities to self or team members via navbar menu or dashboard header. |
 | **Automated Tests** | `custom_addons/alamia_travel_finance/tests/`, `custom_addons/alamia_travel_reporting/tests/` | 5 Golden Financial Scenarios + 18 User/Role tests + 10 Phase 2/Menu/Wizard/Data Scoping tests (33 total integration tests). |
 | **Management Scripts** | `scripts/setup_mcp.py` | Automated MCP server configuration script. |
