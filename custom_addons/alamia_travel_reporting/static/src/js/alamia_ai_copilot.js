@@ -17,7 +17,7 @@ export class AlamiaAiCopilot extends Component {
             loading: true,
             userProfile: null,
             searchQuery: "",
-            activeTab: "chat", // 'chat' or 'dossier'
+            activeTab: "chat",
             messages: [],
             activeDossier: null, // 'customer', 'booking', 'profitability', 'work_items'
             dossierData: null,
@@ -48,6 +48,9 @@ export class AlamiaAiCopilot extends Component {
                 `👋 Hello ${payload.user?.name || "Team Member"}! I am your **${payload.role_profile?.name || "Alamia Travels AI Assistant"}**.` +
                 ` How can I assist you with Travel OS operations today?`
             );
+
+            // Automatically load daily briefing work items card on startup
+            await this.onDailyBriefing();
         } catch (error) {
             console.error("Failed to load Alamia AI profile:", error);
             this.state.loading = false;
@@ -113,7 +116,6 @@ export class AlamiaAiCopilot extends Component {
 
     async onSearchCustomer360(queryName) {
         try {
-            // Strip search prefixes if any
             const cleanName = queryName.replace(/search|customer|360|show|find|for/gi, "").trim() || queryName;
             const res = await this.orm.call("mcp.mixin", "get_customer_360", [], { name: cleanName });
             const payload = res.structuredContent || {};
@@ -137,7 +139,6 @@ export class AlamiaAiCopilot extends Component {
 
     async onSearchBooking360(queryRef) {
         try {
-            // Extract sequence or name e.g. KE-2026-00001
             const match = queryRef.match(/KE-[A-Z0-9-]+/i);
             const ref = match ? match[0] : queryRef.trim();
 
@@ -183,6 +184,13 @@ export class AlamiaAiCopilot extends Component {
         } catch (error) {
             this.addSystemMessage(`⚠️ Profitability calculation for "${queryRef}" failed. Specify a valid booking sequence e.g. KE-2026-00001.`);
         }
+    }
+
+    onSelectWorkItem(item) {
+        this.state.followupForm.res_model = item.res_model || "res.partner";
+        this.state.followupForm.res_id = item.res_id || "";
+        this.state.followupForm.summary = `Follow-up on ${item.summary || "Task"}`;
+        this.notification.add(`Selected item ${item.id}. Form populated below.`, { type: "info" });
     }
 
     async onProposeFollowup() {

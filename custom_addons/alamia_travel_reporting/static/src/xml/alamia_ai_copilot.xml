@@ -119,6 +119,44 @@
                             </div>
                         </t>
 
+                        <!-- WORK ITEMS / DAILY BRIEFING CARD -->
+                        <t t-if="state.activeDossier === 'work_items' &amp;&amp; state.dossierData">
+                            <div class="card border-0 shadow-sm mb-3">
+                                <div class="card-header bg-white fw-bold border-bottom d-flex justify-content-between align-items-center">
+                                    <span>📋 Active Work Queue (<t t-esc="state.dossierData.total_items || 0"/> Items)</span>
+                                    <span class="badge bg-primary">Daily Briefing</span>
+                                </div>
+                                <div class="card-body p-0">
+                                    <t t-if="!state.dossierData.items || state.dossierData.items.length === 0">
+                                        <div class="p-3 text-center text-muted">
+                                            🎉 No pending work items for today!
+                                        </div>
+                                    </t>
+                                    <t t-else="">
+                                        <div class="list-group list-group-flush">
+                                            <t t-foreach="state.dossierData.items" t-as="item" t-key="item.id">
+                                                <div class="list-group-item p-3 d-flex flex-column gap-1">
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <span class="fw-bold text-dark" t-esc="item.summary"/>
+                                                        <span t-attf-class="badge {{ item.is_overdue ? 'bg-danger' : 'bg-warning text-dark' }}" t-esc="item.is_overdue ? 'Overdue' : 'Due Soon'"/>
+                                                    </div>
+                                                    <div class="text-muted small">
+                                                        <span>Target: <strong><t t-esc="item.res_model"/></strong> #<t t-esc="item.res_id"/></span>
+                                                        <span class="ms-2">• Due: <t t-esc="item.deadline"/></span>
+                                                    </div>
+                                                    <div class="mt-2">
+                                                        <button class="btn btn-sm btn-outline-primary" t-on-click="() => this.onSelectWorkItem(item)">
+                                                            ⚡ Populate Follow-up Form
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </t>
+                                        </div>
+                                    </t>
+                                </div>
+                            </div>
+                        </t>
+
                         <!-- CUSTOMER 360 DOSSIER CARD -->
                         <t t-if="state.activeDossier === 'customer' &amp;&amp; state.dossierData">
                             <div class="card border-0 shadow-sm mb-3">
