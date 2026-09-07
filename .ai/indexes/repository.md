@@ -10,8 +10,9 @@
 | **Finance Integration** | `custom_addons/alamia_travel_finance/` | Extends `account.move` with `travel_sale_id`. Invoice & bill creation buttons on sale. `payment_status` compute logic. |
 | **Dashboards & Reporting** | `custom_addons/alamia_travel_reporting/` | `travel.dashboard` AbstractModel backend service + OWL component client action (`travel_dashboard.js`, `travel_dashboard.xml`, SCSS). |
 | **User Provisioning & Roles** | `custom_addons/alamia_travel_core/data/users_data.xml`, `security/security.xml` | Provisioned users (Kamal, Jawad, Ali, Tayyab, Zeeshan). Role-based security matrix & implied permissions. |
-| **Third-Party Addons** | `third_party_addons/mcp_server/` | MCP Server integration with API key auth (`setup_mcp.py`), JSON-RPC 2.0 endpoints on `/mcp`. |
-| **Automated Tests** | `custom_addons/alamia_travel_finance/tests/test_golden_scenarios.py`, `custom_addons/alamia_travel_reporting/tests/test_users_roles_and_dashboards.py` | 5 Golden Financial Scenarios + 18 User/Role/Dashboard security tests (23 total tests). |
+| **Third-Party Addons** | `third_party_addons/mcp_server/`, `third_party_addons/account_financial_report/`, `third_party_addons/date_range/`, `third_party_addons/report_xlsx/` | MCP Server + OCA Financial Reporting suite (Balance Sheet, P&L, Trial Balance, General Ledger, Partner Ledgers). |
+| **Task Scheduling Wizard** | `custom_addons/alamia_travel_core/wizard/travel_schedule_activity_wizard.py` | 1-click wizard for scheduling and assigning activities to self or team members via navbar menu or dashboard header. |
+| **Automated Tests** | `custom_addons/alamia_travel_finance/tests/`, `custom_addons/alamia_travel_reporting/tests/` | 5 Golden Financial Scenarios + 18 User/Role tests + 10 Phase 2/Menu/Wizard/Data Scoping tests (33 total integration tests). |
 | **Management Scripts** | `scripts/setup_mcp.py` | Automated MCP server configuration script. |
 | **Dockerfile** | `Dockerfile` | Custom Odoo 19 image with Python dependencies (`phonenumbers`, `xlsxwriter`, `authlib`, etc.) and copied custom addons. |
 | **Environment Config** | `.env`, `.env.example`, `config/odoo.conf` | Runtime secrets & Odoo configuration (`proxy_mode=True`, `workers`, memory limits). |
@@ -39,12 +40,15 @@ AlamiaTravelOS/
 │   ├── odoo.conf                         # Odoo startup settings
 │   └── nginx/                            # Nginx proxy template
 ├── custom_addons/                        # In-house Odoo modules
-│   ├── alamiatravel_core/                # Master data & security groups
+│   ├── alamiatravel_core/                # Master data, task wizard & security groups
 │   ├── alamiatravel_sales/               # Sales pipeline & sale lines
-│   ├── alamiatravel_finance/             # Accounting integration & golden scenario tests
+│   ├── alamiatravel_finance/             # Accounting integration, settlements & golden scenario tests
 │   └── alamiatravel_reporting/           # Executive & role dashboards + permission tests
 ├── third_party_addons/                   # OCA/3rd-party modules
-│   └── mcp_server/                       # MCP protocol + auth tools
+│   ├── mcp_server/                       # MCP protocol + auth tools
+│   ├── account_financial_report/         # OCA Financial Statements (Balance Sheet, P&L, Trial Balance)
+│   ├── date_range/                       # OCA Date Range management
+│   └── report_xlsx/                      # OCA Excel report generator
 ├── docs/                                 # Project documentation
 │   └── kamal-express/                    # Migration & user specs
 ├── docker-compose.yml                    # Development stack

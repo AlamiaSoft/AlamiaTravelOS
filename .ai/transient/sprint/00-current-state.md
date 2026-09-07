@@ -1,37 +1,42 @@
 # Current State — AlamiaTravelOS
 
 ## Project Status
-AlamiaTravelOS is an active Odoo 19 Docker project with all core sprints, historical data migration, Phase 2 management views, role-based activity cockpits, and dynamic dashboard widget settings matrices complete.
+AlamiaTravelOS is an active Odoo 19 Docker project with all core sprints, historical data migration, Phase 2 management views, role-based activity cockpits, dynamic widget settings matrices, global task scheduling shortcuts, financial data security scoping, and full OCA Financial Reporting integration complete.
 
-### Completed This Session (Phase 2 & Dynamic Widget Settings Matrix)
+### Completed This Session
 
-1. **Dynamic Dashboard Widget Settings Matrix (`Travel OS -> Configuration -> Dashboard Settings`)**
-   - Implemented `res.config.settings` extension in [res_config_settings.py](file:///e:/Alamia/AlamiaTravelOS/custom_addons/alamia_travel_reporting/models/res_config_settings.py) stored in `ir.config_parameter`.
-   - Created admin configuration view in [res_config_settings_views.xml](file:///e:/Alamia/AlamiaTravelOS/custom_addons/alamia_travel_reporting/views/res_config_settings_views.xml) to toggle widget visibility per role.
-   - Integrated dynamic `widget_permissions` check in [travel_dashboard.py](file:///e:/Alamia/AlamiaTravelOS/custom_addons/alamia_travel_reporting/models/travel_dashboard.py) and [travel_dashboard.xml](file:///e:/Alamia/AlamiaTravelOS/custom_addons/alamia_travel_reporting/static/src/xml/travel_dashboard.xml).
+1. **Role-Based Navigation Menu Security Tailoring**
+   - Implemented explicit group restrictions across top-level and sub-level navigation menus in `menus.xml`, `travel_sale_views.xml`, `travel_expense_views.xml`, `partner_agent_views.xml`, and `res_config_settings_views.xml`.
+   - **Configuration (`Travel OS -> Configuration`)**: Restricted to **Managers** (`group_travel_manager`) and **IT Director / Admin** (`group_travel_admin`).
+   - **Finance (`Travel OS -> Finance`)**: Restricted to **CEO**, **Operations Director**, **IT Director**, and **Financial Managers**.
+   - **Reporting (`Travel OS -> Reporting`)**: Restricted to Management & Executive roles.
+   - **Operations (`Travel OS -> Operations`)**: Accessible to all operational and sales staff.
 
-2. **Role-Based Operational Productivity Cockpit (`mail.activity` Driven)**
-   - Implemented 5-tier visual hierarchy: **MY WORK TODAY (Top Priority)** → **ATTENTION REQUIRED** → **QUICK ACTIONS** → **TEAM WORKLOAD MATRIX** → **PERFORMANCE / KPIs**.
-   - Built interactive task cards for `Today`, `Overdue`, `Upcoming`, and `Unassigned` activities with record navigation.
-   - Added outcome capture modal (`Mark Done`) requiring outcome selection and notes, automatically posting to chatter and scheduling optional follow-ups.
+2. **Global Task / To-Do Scheduling Shortcut UI/UX**
+   - Created top navbar shortcut menu `Travel OS -> Schedule Task / To-Do` (`menu_travel_schedule_task`).
+   - Added `+ Schedule Task` quick action button in the header of the Travel OS Dashboard.
+   - Built lightweight popup wizard `travel.schedule.activity.wizard` allowing managers and staff to schedule and assign tasks to self or team members (Kamal, Jawad, Ali, Tayyab, Zeeshan) with due dates, activity types, titles, and notes.
 
-3. **Default Login Landing Page & UI Routing**
-   - Configured `action_id` on user records so users land directly on their role-specific TravelOS Dashboard upon login.
+3. **Financial Data Scoping & CEO Accounting Access**
+   - Configured `is_financial_role` backend guard in `travel_dashboard.py` and `travel_dashboard.xml`.
+   - Financial numbers (Total Monthly Revenue, Profit Margin %, Net Income, Cash/Bank Positions) are strictly stripped and zeroed out for non-executive roles (`ops_marketing`, `sales`).
+   - Configured standard Odoo Invoicing permissions (`account.group_account_invoice`, `account.group_account_readonly`) on `travel_role_ceo` for CEO financial report access.
 
-4. **Expenses Management Screens (`Travel OS -> Expenses`)**
-   - Created `travel.expense.category` and `travel.expense` models with list, form, and kanban views.
+4. **OCA Financial Reporting Suite Integration (`account_financial_report`)**
+   - Cloned and integrated official OCA 19.0 modules (`account_financial_report`, `date_range`, `report_xlsx`) into `third_party_addons/`.
+   - Organized reports menu under **Travel OS → Finance → Accounting Reports**:
+     - *Trial Balance & Balance Sheet*
+     - *General Ledger & Profit & Loss*
+     - *Journal Ledger*
+     - *Open Items & Receivables/Payables*
+     - *Aged Partner Balances*
+     - *VAT & Tax Report*
+   - Added `'account_financial_report'` dependency in `alamia_travel_finance/__manifest__.py` and configured `-i` and `-u` startup flags in `docker-compose.prod.yml` for 100% automated zero-command VPS deployments via Portainer.
 
-5. **Services, Products & Package Subscriptions (`Travel OS -> Services & Packages`)**
-   - Extended `travel.service.catalog` with selling prices, costs, categories, and target margin %.
-   - Created `travel.service.package` for travel bundles.
-
-6. **Sub-Agents & Partners Management (`Travel OS -> Sub-Agents & Partners`)**
-   - Extended `res.partner` with `is_travel_agent`, `agent_code`, default commission rate %, and live sales/commission stats.
-
-7. **Automated Testing & Deployment**
-   - Added `test_07_dynamic_dashboard_widget_permissions` in `test_phase2_features.py`. All 30 automated tests passed clean (`0 failed, 0 errors`).
-   - Upgraded `alamia_travel_reporting` module on local DB (`alamiatravelos`).
-   - Committed and pushed to GitHub `main` ([1f7cb00](https://github.com/AlamiaSoft/AlamiaTravelOS/commit/1f7cb00)).
+5. **Automated Testing & Git Deployment**
+   - Added security & workflow unit tests (`test_08_role_based_menu_visibility`, `test_09_task_schedule_wizard_flow`, `test_10_financial_data_scoping_per_role`) in `test_phase2_features.py`.
+   - All 33 automated integration tests passed clean (`0 failed, 0 errors`).
+   - Committed and pushed to GitHub `main` ([4cb1b84](https://github.com/AlamiaSoft/AlamiaTravelOS/commit/4cb1b84)).
 
 ---
 
