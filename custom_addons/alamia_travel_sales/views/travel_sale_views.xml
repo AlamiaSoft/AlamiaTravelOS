@@ -54,6 +54,9 @@
                                         <field name="selling_amount" readonly="1" force_save="1"/>
                                         <field name="supplier_id" context="{'default_is_travel_supplier': True}"/>
                                         <field name="cost_amount"/>
+                                        <field name="agent_id" optional="show"/>
+                                        <field name="commission_rate" optional="hide"/>
+                                        <field name="commission_amount" readonly="1" optional="show"/>
                                         <field name="gross_profit" readonly="1"/>
                                         <field name="currency_id" column_invisible="1"/>
                                     </list>

@@ -141,3 +141,30 @@ class TravelSale(models.Model):
             created_bills.append(bill)
 
         return self.action_view_bills()
+
+    def action_register_payment(self):
+        self.ensure_one()
+        invoices = self.invoice_ids.filtered(lambda m: m.move_type == 'out_invoice' and m.state == 'posted' and m.payment_state in ('not_paid', 'partial'))
+        if not invoices:
+            draft_invoices = self.invoice_ids.filtered(lambda m: m.move_type == 'out_invoice' and m.state == 'draft')
+            if draft_invoices:
+                invoices = draft_invoices
+                invoices.action_post()
+            else:
+                self.action_create_invoice()
+                invoices = self.invoice_ids.filtered(lambda m: m.move_type == 'out_invoice' and m.state == 'draft')
+                invoices.action_post()
+
+        return {
+            'name': _('Register Payment'),
+            'res_model': 'account.payment.register',
+            'view_mode': 'form',
+            'views': [(False, 'form')],
+            'type': 'ir.actions.act_window',
+            'target': 'new',
+            'context': {
+                'active_model': 'account.move',
+                'active_ids': invoices.ids,
+            },
+        }
+

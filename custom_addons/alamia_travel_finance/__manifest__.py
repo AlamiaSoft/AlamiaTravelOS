@@ -12,8 +12,11 @@
     'depends': ['alamia_travel_sales', 'account'],
     'data': [
         'security/ir.model.access.csv',
+        'data/expense_category_data.xml',
         'views/travel_sale_views.xml',
         'views/travel_partner_settlement_views.xml',
+        'views/travel_expense_views.xml',
+        'views/partner_agent_views.xml',
     ],
     'installable': True,
     'application': False,

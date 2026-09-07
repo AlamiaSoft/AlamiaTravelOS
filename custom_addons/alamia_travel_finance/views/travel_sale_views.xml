@@ -9,6 +9,8 @@
                 <xpath expr="//header" position="inside">
                     <button name="action_create_invoice" string="Create Invoice" type="object" class="oe_highlight" 
                             invisible="state == 'draft' or amount_invoiced &gt; 0"/>
+                    <button name="action_register_payment" string="Register Payment" type="object" class="btn-success"
+                            invisible="state == 'draft' or payment_status == 'paid'"/>
                     <button name="action_create_vendor_bills" string="Create Vendor Bills" type="object" 
                             invisible="state == 'draft'"/>
                 </xpath>

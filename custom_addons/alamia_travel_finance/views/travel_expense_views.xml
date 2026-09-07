@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Expense Category Tree View -->
+        <record id="view_travel_expense_category_tree" model="ir.ui.view">
+            <field name="name">travel.expense.category.tree</field>
+            <field name="model">travel.expense.category</field>
+            <field name="arch" type="xml">
+                <list string="Expense Categories">
+                    <field name="sequence" widget="handle"/>
+                    <field name="code"/>
+                    <field name="name"/>
+                    <field name="account_id"/>
+                    <field name="expense_count"/>
+                    <field name="active"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Expense Category Form View -->
+        <record id="view_travel_expense_category_form" model="ir.ui.view">
+            <field name="name">travel.expense.category.form</field>
+            <field name="model">travel.expense.category</field>
+            <field name="arch" type="xml">
+                <form string="Expense Category">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="code"/>
+                                <field name="sequence"/>
+                            </group>
+                            <group>
+                                <field name="account_id"/>
+                                <field name="active"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Description">
+                                <field name="description" placeholder="Category notes or details..."/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Expense Category Action -->
+        <record id="action_travel_expense_category" model="ir.actions.act_window">
+            <field name="name">Expense Categories</field>
+            <field name="res_model">travel.expense.category</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create your first Expense Category!
+                </p>
+            </field>
+        </record>
+
+        <!-- Travel Expense Tree View -->
+        <record id="view_travel_expense_tree" model="ir.ui.view">
+            <field name="name">travel.expense.tree</field>
+            <field name="model">travel.expense</field>
+            <field name="arch" type="xml">
+                <list string="Expenses" decoration-info="state == 'draft'" decoration-success="state == 'paid'" decoration-primary="state == 'posted'" decoration-muted="state == 'cancelled'">
+                    <field name="name"/>
+                    <field name="date"/>
+                    <field name="category_id"/>
+                    <field name="description"/>
+                    <field name="partner_id"/>
+                    <field name="payment_method"/>
+                    <field name="amount" widget="monetary"/>
+                    <field name="currency_id" column_invisible="True"/>
+                    <field name="state" widget="badge" decoration-info="state == 'draft'" decoration-success="state == 'paid'" decoration-primary="state == 'posted'" decoration-muted="state == 'cancelled'"/>
+                    <field name="user_id" widget="many2one_avatar"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Travel Expense Form View -->
+        <record id="view_travel_expense_form" model="ir.ui.view">
+            <field name="name">travel.expense.form</field>
+            <field name="model">travel.expense</field>
+            <field name="arch" type="xml">
+                <form string="Expense Entry">
+                    <header>
+                        <button name="action_approve" string="Approve" type="object" class="oe_highlight" invisible="state != 'draft'"/>
+                        <button name="action_post" string="Post to Accounting" type="object" class="oe_highlight" invisible="state not in ('draft', 'approved')"/>
+                        <button name="action_pay" string="Mark Paid" type="object" class="oe_highlight" invisible="state != 'posted'"/>
+                        <button name="action_reset_to_draft" string="Reset to Draft" type="object" invisible="state not in ('approved', 'cancelled')"/>
+                        <button name="action_cancel" string="Cancel" type="object" invisible="state in ('paid', 'cancelled')"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,approved,posted,paid"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" readonly="1"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="category_id"/>
+                                <field name="description"/>
+                                <field name="amount" widget="monetary"/>
+                                <field name="currency_id" invisible="1"/>
+                                <field name="payment_method"/>
+                            </group>
+                            <group>
+                                <field name="date"/>
+                                <field name="partner_id"/>
+                                <field name="user_id"/>
+                                <field name="move_id" readonly="1" invisible="not move_id"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Notes">
+                                <field name="notes" placeholder="Additional details or payment receipts..."/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+        <!-- Travel Expense Kanban View -->
+        <record id="view_travel_expense_kanban" model="ir.ui.view">
+            <field name="name">travel.expense.kanban</field>
+            <field name="model">travel.expense</field>
+            <field name="arch" type="xml">
+                <kanban class="o_kanban_mobile" default_group_by="state">
+                    <field name="name"/>
+                    <field name="category_id"/>
+                    <field name="description"/>
+                    <field name="amount"/>
+                    <field name="currency_id"/>
+                    <field name="date"/>
+                    <field name="state"/>
+                    <templates>
+                        <t t-name="card">
+                            <div class="oe_kanban_card oe_kanban_global_click">
+                                <div class="row">
+                                    <div class="col-8">
+                                        <strong><field name="description"/></strong>
+                                    </div>
+                                    <div class="col-4 text-end">
+                                        <field name="amount" widget="monetary"/>
+                                    </div>
+                                </div>
+                                <div class="row text-muted mt-2">
+                                    <div class="col-6">
+                                        <small><field name="category_id"/></small>
+                                    </div>
+                                    <div class="col-6 text-end">
+                                        <small><field name="date"/></small>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- Travel Expense Action -->
+        <record id="action_travel_expense" model="ir.actions.act_window">
+            <field name="name">Expenses Management</field>
+            <field name="res_model">travel.expense</field>
+            <field name="view_mode">list,kanban,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Record your first Office Expense!
+                </p>
+            </field>
+        </record>
+
+        <!-- Menu Items for Expenses -->
+        <menuitem id="menu_travel_expenses_root"
+                  name="Expenses"
+                  parent="alamia_travel_core.menu_travel_os_root"
+                  sequence="25"/>
+
+        <menuitem id="menu_travel_expenses_list"
+                  name="Office Expenses"
+                  parent="menu_travel_expenses_root"
+                  action="action_travel_expense"
+                  sequence="1"/>
+
+        <menuitem id="menu_travel_expense_categories_list"
+                  name="Expense Categories"
+                  parent="menu_travel_expenses_root"
+                  action="action_travel_expense_category"
+                  sequence="2"/>
+    </data>
+</odoo>

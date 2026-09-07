@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Sub-Agent Form View Extension -->
+        <record id="view_partner_form_agent_inherit" model="ir.ui.view">
+            <field name="name">res.partner.form.agent.inherit</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='sales_purchases']//group" position="inside">
+                    <group string="Travel OS Sub-Agent &amp; Partner Settings">
+                        <field name="is_travel_agent"/>
+                        <field name="agent_code" invisible="not is_travel_agent"/>
+                        <field name="default_commission_rate" invisible="not is_travel_agent"/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Sub-Agent Tree View -->
+        <record id="view_travel_sub_agent_tree" model="ir.ui.view">
+            <field name="name">travel.sub.agent.tree</field>
+            <field name="model">res.partner</field>
+            <field name="arch" type="xml">
+                <list string="Sub-Agents &amp; Partners">
+                    <field name="name"/>
+                    <field name="agent_code"/>
+                    <field name="phone"/>
+                    <field name="whatsapp_number"/>
+                    <field name="email"/>
+                    <field name="default_commission_rate"/>
+                    <field name="total_agent_sales_count"/>
+                    <field name="total_agent_sales_amount" widget="monetary"/>
+                    <field name="total_agent_commission_amount" widget="monetary"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Sub-Agent Kanban View -->
+        <record id="view_travel_sub_agent_kanban" model="ir.ui.view">
+            <field name="name">travel.sub.agent.kanban</field>
+            <field name="model">res.partner</field>
+            <field name="arch" type="xml">
+                <kanban class="o_res_partner_kanban">
+                    <field name="id"/>
+                    <field name="name"/>
+                    <field name="agent_code"/>
+                    <field name="phone"/>
+                    <field name="email"/>
+                    <field name="total_agent_sales_amount"/>
+                    <field name="total_agent_commission_amount"/>
+                    <templates>
+                        <t t-name="card">
+                            <div class="oe_kanban_card oe_kanban_global_click">
+                                <div class="row">
+                                    <div class="col-8">
+                                        <strong><field name="name"/></strong>
+                                        <div t-if="record.agent_code.raw_value" class="text-muted"><small>Code: <field name="agent_code"/></small></div>
+                                    </div>
+                                    <div class="col-4 text-end">
+                                        <span class="badge text-bg-info">Agent</span>
+                                    </div>
+                                </div>
+                                <div class="row mt-2 text-muted">
+                                    <div class="col-6">
+                                        <small>Sales: <field name="total_agent_sales_amount" widget="monetary"/></small>
+                                    </div>
+                                    <div class="col-6 text-end">
+                                        <small>Comm: <field name="total_agent_commission_amount" widget="monetary"/></small>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- Action for Sub-Agents & Partners -->
+        <record id="action_travel_sub_agents" model="ir.actions.act_window">
+            <field name="name">Sub-Agents &amp; Partners</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_mode">kanban,list,form</field>
+            <field name="domain">['|', ('is_travel_agent', '=', True), ('travel_customer_type', '=', 'agent')]</field>
+            <field name="context">{'default_is_travel_agent': True, 'default_travel_customer_type': 'agent'}</field>
+            <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'kanban', 'view_id': ref('view_travel_sub_agent_kanban')}),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('view_travel_sub_agent_tree')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('base.view_partner_form')})]"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create your first Sub-Agent or B2B Partner!
+                </p>
+            </field>
+        </record>
+
+        <!-- Menu Item for Sub-Agents & Partners -->
+        <menuitem id="menu_travel_sub_agents"
+                  name="Sub-Agents &amp; Partners"
+                  parent="alamia_travel_core.menu_travel_os_root"
+                  action="action_travel_sub_agents"
+                  sequence="35"/>
+    </data>
+</odoo>

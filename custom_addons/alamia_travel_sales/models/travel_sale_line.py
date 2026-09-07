@@ -26,11 +26,23 @@ class TravelSaleLine(models.Model):
     # Gross profit
     gross_profit = fields.Monetary(string='Gross Profit', compute='_compute_amounts', store=True)
 
-    @api.depends('quantity', 'unit_price', 'cost_amount')
+    # Sub-agent commission
+    agent_id = fields.Many2one('res.partner', string='Sub-Agent / Partner', domain="['|', ('is_travel_agent', '=', True), ('travel_customer_type', '=', 'agent')]", tracking=True)
+    commission_rate = fields.Float(string='Commission %', default=0.0, tracking=True)
+    commission_amount = fields.Monetary(string='Commission Amount', compute='_compute_amounts', store=True, tracking=True)
+
+    @api.onchange('agent_id')
+    def _onchange_agent_id(self):
+        if self.agent_id and self.agent_id.default_commission_rate and not self.commission_rate:
+            self.commission_rate = self.agent_id.default_commission_rate
+
+    @api.depends('quantity', 'unit_price', 'cost_amount', 'commission_rate')
     def _compute_amounts(self):
         for line in self:
             line.selling_amount = line.quantity * line.unit_price
             line.gross_profit = line.selling_amount - line.cost_amount
+            line.commission_amount = line.selling_amount * (line.commission_rate / 100.0)
+
 
     @api.constrains('unit_price', 'cost_amount')
     def _check_positive_amounts(self):

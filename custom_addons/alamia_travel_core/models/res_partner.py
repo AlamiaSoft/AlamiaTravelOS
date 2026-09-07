@@ -24,5 +24,20 @@ class ResPartner(models.Model):
     cnic_passport = fields.Char("CNIC / Passport Number")
     whatsapp_number = fields.Char("WhatsApp Number")
     
-    # Optional branch context (if multi-branch is setup)
-    # branch_id = fields.Many2one('res.branch', string="Branch")
+    # Sub-agent & Partner extensions
+    is_travel_agent = fields.Boolean("Is Sub-Agent / Partner", default=False)
+    agent_code = fields.Char("Agent Code")
+    default_commission_rate = fields.Float("Default Commission %", default=0.0)
+
+    total_agent_sales_count = fields.Integer(string="Total Sales", compute="_compute_agent_stats")
+    total_agent_sales_amount = fields.Float(string="Total Sales Amount", compute="_compute_agent_stats")
+    total_agent_commission_amount = fields.Float(string="Total Commission Earned", compute="_compute_agent_stats")
+
+    def _compute_agent_stats(self):
+        for partner in self:
+            sale_lines = self.env['travel.sale.line'].search([('agent_id', '=', partner.id)])
+            partner.total_agent_sales_count = len(sale_lines.mapped('sale_id'))
+            partner.total_agent_sales_amount = sum(sale_lines.mapped('selling_amount'))
+            partner.total_agent_commission_amount = sum(sale_lines.mapped('commission_amount'))
+
+

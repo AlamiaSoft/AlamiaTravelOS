@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Sequence for Travel Expenses -->
+        <record id="seq_travel_expense" model="ir.sequence">
+            <field name="name">Travel Expense Sequence</field>
+            <field name="code">travel.expense</field>
+            <field name="prefix">EXP/%(year)s/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Default Expense Categories -->
+        <record id="cat_expense_utilities" model="travel.expense.category">
+            <field name="name">Utilities (Electricity, Internet, Water)</field>
+            <field name="code">EXP_UTIL</field>
+            <field name="sequence">1</field>
+            <field name="description">Monthly utility bills including electricity, internet, telephone, water</field>
+        </record>
+
+        <record id="cat_expense_supplies" model="travel.expense.category">
+            <field name="name">Office Supplies &amp; Printing</field>
+            <field name="code">EXP_SUPP</field>
+            <field name="sequence">2</field>
+            <field name="description">Paper, toner, stationery, office consumables</field>
+        </record>
+
+        <record id="cat_expense_salaries" model="travel.expense.category">
+            <field name="name">Salaries &amp; Staff Wages</field>
+            <field name="code">EXP_SAL</field>
+            <field name="sequence">3</field>
+            <field name="description">Monthly salaries, staff stipends, bonuses</field>
+        </record>
+
+        <record id="cat_expense_marketing" model="travel.expense.category">
+            <field name="name">Marketing &amp; Media Ads</field>
+            <field name="code">EXP_MKT</field>
+            <field name="sequence">4</field>
+            <field name="description">Facebook/Google ads, flyers, banners, social media marketing</field>
+        </record>
+
+        <record id="cat_expense_rent" model="travel.expense.category">
+            <field name="name">Rent &amp; Office Maintenance</field>
+            <field name="code">EXP_RENT</field>
+            <field name="sequence">5</field>
+            <field name="description">Office rent, janitorial, maintenance work</field>
+        </record>
+
+        <record id="cat_expense_transport" model="travel.expense.category">
+            <field name="name">Travel &amp; Fuel Expense</field>
+            <field name="code">EXP_TRV</field>
+            <field name="sequence">6</field>
+            <field name="description">Fuel, taxi fares, client travel allowances</field>
+        </record>
+
+        <record id="cat_expense_misc" model="travel.expense.category">
+            <field name="name">Miscellaneous Expenses</field>
+            <field name="code">EXP_MISC</field>
+            <field name="sequence">7</field>
+            <field name="description">General small office expenses and tea/refreshments</field>
+        </record>
+    </data>
+</odoo>

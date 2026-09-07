@@ -71,5 +71,27 @@
                   action="action_travel_dashboard_ops_marketing"
                   groups="alamia_travel_core.travel_role_operations_marketing,alamia_travel_core.travel_role_ceo,alamia_travel_core.group_travel_admin"
                   sequence="4"/>
+
+        <!-- Assign Default Home Actions for Users -->
+        <function model="res.users" name="write">
+            <value eval="[ref('alamia_travel_core.user_kamal')]"/>
+            <value eval="{'action_id': ref('action_travel_dashboard_ceo')}"/>
+        </function>
+        <function model="res.users" name="write">
+            <value eval="[ref('alamia_travel_core.user_jawad')]"/>
+            <value eval="{'action_id': ref('action_travel_dashboard_operations')}"/>
+        </function>
+        <function model="res.users" name="write">
+            <value eval="[ref('alamia_travel_core.user_ali')]"/>
+            <value eval="{'action_id': ref('action_travel_dashboard_main')}"/>
+        </function>
+        <function model="res.users" name="write">
+            <value eval="[ref('alamia_travel_core.user_tayyab')]"/>
+            <value eval="{'action_id': ref('action_travel_dashboard_ops_marketing')}"/>
+        </function>
+        <function model="res.users" name="write">
+            <value eval="[ref('alamia_travel_core.user_zeeshan')]"/>
+            <value eval="{'action_id': ref('action_travel_dashboard_sales')}"/>
+        </function>
     </data>
 </odoo>

@@ -3,3 +3,8 @@ access_travel_partner_settlement_user,travel.partner.settlement.user,model_trave
 access_travel_partner_settlement_sales,travel.partner.settlement.sales,model_travel_partner_settlement,alamia_travel_core.group_travel_sales,1,1,1,0
 access_travel_partner_settlement_manager,travel.partner.settlement.manager,model_travel_partner_settlement,alamia_travel_core.group_travel_manager,1,1,1,1
 access_travel_partner_settlement_admin,travel.partner.settlement.admin,model_travel_partner_settlement,alamia_travel_core.group_travel_admin,1,1,1,1
+access_travel_expense_category_user,travel.expense.category.user,model_travel_expense_category,base.group_user,1,0,0,0
+access_travel_expense_category_manager,travel.expense.category.manager,model_travel_expense_category,alamia_travel_core.group_travel_manager,1,1,1,1
+access_travel_expense_user,travel.expense.user,model_travel_expense,base.group_user,1,1,1,0
+access_travel_expense_manager,travel.expense.manager,model_travel_expense,alamia_travel_core.group_travel_manager,1,1,1,1
+
