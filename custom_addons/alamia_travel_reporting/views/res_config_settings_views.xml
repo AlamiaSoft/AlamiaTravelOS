@@ -7,7 +7,7 @@
         <field name="inherit_id" ref="base.res_config_settings_view_form"/>
         <field name="arch" type="xml">
             <xpath expr="//form" position="inside">
-                <app data-string="Travel OS Dashboards" string="Travel OS Dashboards" name="alamia_travel_reporting">
+                <app data-string="Travel OS Dashboards" string="Travel OS Dashboards" name="alamia_travel_reporting" data-key="alamia_travel_reporting">
                     <block title="Dashboard Role Widget Matrix" id="travel_dashboard_widgets_setting">
                         <!-- CEO Role -->
                         <setting title="CEO Dashboard Widgets" help="Configure widget visibility for CEO Executive Role">

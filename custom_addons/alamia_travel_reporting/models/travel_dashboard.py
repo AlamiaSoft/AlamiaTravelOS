@@ -285,8 +285,10 @@ class TravelDashboard(models.AbstractModel):
         icp = self.env['ir.config_parameter'].sudo()
 
         def get_widget_perm(param_key, default=True):
-            val = icp.get_param(param_key, str(default))
-            return val == 'True' or val is True
+            val = icp.get_param(param_key, None)
+            if val is None:
+                return default
+            return val in ('True', '1', True)
 
         default_team_workload = role in ('ceo', 'operations')
 
