@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <menuitem
+        parent="alamia_travel_core.menu_travel_finance"
+        id="menu_oca_reports"
+        name="Accounting Reports"
+        groups="alamia_travel_core.group_travel_manager,alamia_travel_core.travel_role_ceo,alamia_travel_core.travel_role_operations_director,alamia_travel_core.travel_role_it_director"
+        sequence="10"
+    />
+    <menuitem
+        parent="menu_oca_reports"
+        action="action_trial_balance_wizard"
+        id="menu_trial_balance_wizard"
+        name="Trial Balance &amp; Balance Sheet"
+        sequence="10"
+    />
+    <menuitem
+        parent="menu_oca_reports"
+        action="action_general_ledger_wizard"
+        id="menu_general_ledger_wizard"
+        name="General Ledger &amp; Profit &amp; Loss"
+        sequence="20"
+    />
+    <menuitem
+        parent="menu_oca_reports"
+        action="action_journal_ledger_wizard"
+        id="menu_journal_ledger_wizard"
+        name="Journal Ledger"
+        sequence="30"
+    />
+    <menuitem
+        parent="menu_oca_reports"
+        action="action_open_items_wizard"
+        id="menu_open_items_wizard"
+        name="Open Items &amp; Receivables/Payables"
+        sequence="40"
+    />
+    <menuitem
+        parent="menu_oca_reports"
+        action="action_aged_partner_balance_wizard"
+        id="menu_aged_partner_balance_wizard"
+        name="Aged Partner Balances"
+        sequence="50"
+    />
+    <menuitem
+        parent="menu_oca_reports"
+        action="action_vat_report_wizard"
+        id="menu_vat_report_wizard"
+        name="VAT &amp; Tax Report"
+        sequence="60"
+    />
+</odoo>
