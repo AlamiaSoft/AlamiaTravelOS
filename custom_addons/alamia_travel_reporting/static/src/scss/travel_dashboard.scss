@@ -14,6 +14,11 @@
         }
     }
 
+    .nav-pills .nav-link {
+        cursor: pointer;
+        border-radius: 20px;
+    }
+
     .table-hover tbody tr {
         cursor: pointer;
         transition: background-color 0.15s ease;
@@ -25,5 +30,9 @@
 
     .progress-bar {
         border-radius: 4px;
+    }
+
+    .modal.show {
+        display: block;
     }
 }

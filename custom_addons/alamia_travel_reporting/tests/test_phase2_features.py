@@ -152,3 +152,74 @@ class TestPhase2Features(TransactionCase):
         res = sale.action_register_payment()
         self.assertEqual(res.get('res_model'), 'account.payment.register')
         self.assertTrue(sale.invoice_ids, "Register payment action should automatically generate customer invoice.")
+
+    def test_06_mandatory_activity_cockpit_acceptance_flow(self):
+        """
+        Acceptance Test:
+        1. Admin assigns mail.activity on a customer to Tayyab.
+        2. Tayyab fetches dashboard and sees activity under 'My Work Today'.
+        3. Tayyab completes activity with outcome note & schedules follow-up.
+        4. Activity is completed and new follow-up is scheduled.
+        5. Manager team workload reflects updated workload state for Tayyab.
+        """
+        from datetime import date, timedelta
+        today = date.today()
+        user_tayyab = self.env.ref('alamia_travel_core.user_tayyab')
+        act_type = self.env['mail.activity.type'].search([], limit=1)
+
+        # 1. Admin creates activity for Tayyab
+        partner_model_id = self.env['ir.model']._get_id('res.partner')
+        activity = self.env['mail.activity'].create({
+            'res_model_id': partner_model_id,
+            'res_id': self.customer.id,
+            'activity_type_id': act_type.id,
+            'summary': 'Call Customer regarding outstanding payment',
+            'date_deadline': today,
+            'user_id': user_tayyab.id,
+        })
+
+        # 2. Tayyab fetches dashboard data
+        Dashboard = self.env['travel.dashboard'].with_user(user_tayyab)
+        data = Dashboard.get_dashboard_data('ops_marketing')
+
+        initial_tayyab_workload = next((w for w in data['team_workload'] if w['user_id'] == user_tayyab.id), {'today_count': 0, 'upcoming_count': 0})
+        initial_today = initial_tayyab_workload['today_count']
+        initial_upcoming = initial_tayyab_workload['upcoming_count']
+
+        act_today_ids = [a['id'] for a in data['my_activities']['today']]
+        self.assertIn(activity.id, act_today_ids, "Assigned activity should appear in Tayyab's 'My Work Today'")
+
+        # 3. Tayyab completes activity with outcome feedback & schedules next activity
+        tomorrow = str(today + timedelta(days=1))
+        Dashboard.action_complete_activity(
+            activity_id=activity.id,
+            outcome="Payment Promised",
+            feedback="Customer promised transfer by tomorrow afternoon",
+            next_activity={
+                'activity_type_id': act_type.id,
+                'date_deadline': tomorrow,
+                'summary': 'Verify bank transfer receipt',
+                'user_id': user_tayyab.id,
+            }
+        )
+
+        # 4. Verify original activity completed and new activity created
+        self.env.flush_all()
+        self.assertFalse(self.env['mail.activity'].search([('id', '=', activity.id)]), "Completed activity should no longer exist in mail.activity table.")
+
+        new_activity = self.env['mail.activity'].search([
+            ('res_model', '=', 'res.partner'),
+            ('res_id', '=', self.customer.id),
+            ('user_id', '=', user_tayyab.id),
+        ])
+        self.assertEqual(len(new_activity), 1, "New follow-up activity should be scheduled.")
+        self.assertEqual(new_activity.summary, 'Verify bank transfer receipt')
+        self.assertEqual(str(new_activity.date_deadline), tomorrow)
+
+        # 5. Verify manager workload matrix updates
+        updated_data = Dashboard.get_dashboard_data('ops_marketing')
+        tayyab_workload = next((w for w in updated_data['team_workload'] if w['user_id'] == user_tayyab.id), None)
+        self.assertIsNotNone(tayyab_workload, "Tayyab should be present in team workload matrix.")
+        self.assertEqual(tayyab_workload['today_count'], initial_today - 1)
+        self.assertEqual(tayyab_workload['upcoming_count'], initial_upcoming + 1)
+

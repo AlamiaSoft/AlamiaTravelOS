@@ -9,7 +9,7 @@
                         <i class="fa fa-tachometer me-2"/> <t t-esc="roleTitle"/>
                     </h2>
                     <p class="text-muted mb-0 small">
-                        Welcome, <span class="fw-semibold text-dark"><t t-esc="state.data.user_name"/></span> | Real-time Operations &amp; Financial Control
+                        Welcome, <span class="fw-semibold text-dark"><t t-esc="state.data.user_name"/></span> | Daily Work Cockpit &amp; Execution Layer
                     </p>
                 </div>
                 <div class="d-flex gap-2">
@@ -27,259 +27,358 @@
                 <div class="spinner-border text-primary" role="status">
                     <span class="visually-hidden">Loading...</span>
                 </div>
-                <p class="mt-2 text-muted">Calculating financial metrics...</p>
+                <p class="mt-2 text-muted">Loading your work cockpit...</p>
             </div>
 
             <div t-else="">
-                <!-- KPI GRID - CEO VIEW -->
-                <div t-if="state.data.role === 'ceo'" class="row g-3 mb-4">
-                    <div class="col-12 col-md-6 col-lg-3">
-                        <div class="card shadow-sm border-0 border-start border-4 border-primary h-100 kpi-card" t-on-click="() => this.openSales([['date_sale', '=', new Date().toISOString().split('T')[0]]], 'Today Sales')">
-                            <div class="card-body">
-                                <span class="text-muted small text-uppercase fw-bold">Today's Sales</span>
-                                <h3 class="mb-0 mt-2 fw-bold text-dark">
-                                    <t t-esc="state.data.currency_symbol"/> <t t-esc="formatCurrency(state.data.kpis.today_sales)"/>
-                                </h3>
-                                <small class="text-muted"><t t-esc="state.data.kpis.today_sales_count || 0"/> bookings today</small>
-                            </div>
+                <!-- TIER 1: MY WORK TODAY (DAILY EXECUTION COCKPIT) -->
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center">
+                        <h4 class="card-title mb-0 fw-bold text-dark">
+                            <i class="fa fa-check-square-o text-success me-2"/> MY WORK TODAY
+                        </h4>
+                        <!-- Navigation Tabs -->
+                        <ul class="nav nav-pills card-header-pills small">
+                            <li class="nav-item">
+                                <a class="nav-link px-3 py-1" t-att-class="{ 'active bg-warning text-dark fw-bold': state.activeTab === 'today', 'text-muted': state.activeTab !== 'today' }" href="#" t-on-click.prevent="() => this.state.activeTab = 'today'">
+                                    Due Today <span class="badge rounded-pill bg-dark ms-1"><t t-esc="state.data.my_activities.today_count"/></span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link px-3 py-1" t-att-class="{ 'active bg-danger text-white fw-bold': state.activeTab === 'overdue', 'text-muted': state.activeTab !== 'overdue' }" href="#" t-on-click.prevent="() => this.state.activeTab = 'overdue'">
+                                    Overdue <span class="badge rounded-pill bg-white text-danger ms-1"><t t-esc="state.data.my_activities.overdue_count"/></span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link px-3 py-1" t-att-class="{ 'active bg-info text-white fw-bold': state.activeTab === 'upcoming', 'text-muted': state.activeTab !== 'upcoming' }" href="#" t-on-click.prevent="() => this.state.activeTab = 'upcoming'">
+                                    Upcoming <span class="badge rounded-pill bg-white text-info ms-1"><t t-esc="state.data.my_activities.upcoming_count"/></span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link px-3 py-1" t-att-class="{ 'active bg-secondary text-white fw-bold': state.activeTab === 'unassigned', 'text-muted': state.activeTab !== 'unassigned' }" href="#" t-on-click.prevent="() => this.state.activeTab = 'unassigned'">
+                                    Unassigned <span class="badge rounded-pill bg-white text-secondary ms-1"><t t-esc="state.data.unassigned_activities.length"/></span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-body bg-light rounded-bottom p-3">
+                        <!-- TODAY'S ACTIVITIES -->
+                        <div t-if="state.activeTab === 'today'">
+                            <t t-if="state.data.my_activities.today.length === 0">
+                                <div class="text-center py-4 text-muted">
+                                    <i class="fa fa-smile-o fa-2x mb-2 text-success"/><br/>
+                                    <strong>No tasks due today!</strong> You are all caught up.
+                                </div>
+                            </t>
+                            <t t-else="">
+                                <div class="row g-3">
+                                    <t t-foreach="state.data.my_activities.today" t-as="act" t-key="act.id">
+                                        <div class="col-12 col-md-6 col-lg-4">
+                                            <div class="card shadow-sm border-0 border-start border-4 border-warning h-100">
+                                                <div class="card-body d-flex flex-column justify-content-between">
+                                                    <div>
+                                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                                            <span class="badge bg-warning text-dark"><i t-attf-class="fa {{act.activity_icon}} me-1"/> <t t-esc="act.activity_type"/></span>
+                                                            <span class="small text-muted"><i class="fa fa-clock-o me-1"/> Today</span>
+                                                        </div>
+                                                        <h6 class="fw-bold text-dark mb-1">
+                                                            <a href="#" class="text-decoration-none text-dark" t-on-click.prevent="() => this.openRecord(act.res_model, act.res_id)">
+                                                                <t t-esc="act.res_name"/>
+                                                            </a>
+                                                        </h6>
+                                                        <p class="small text-primary fw-semibold mb-1"><t t-esc="act.summary"/></p>
+                                                        <p t-if="act.note" class="small text-muted mb-2 fst-italic"><t t-esc="act.note"/></p>
+                                                    </div>
+                                                    <div class="mt-3 pt-2 border-top d-flex justify-content-between align-items-center gap-1">
+                                                        <button class="btn btn-sm btn-outline-secondary" t-on-click="() => this.openRecord(act.res_model, act.res_id)">
+                                                            <i class="fa fa-external-link"/> Open
+                                                        </button>
+                                                        <button class="btn btn-sm btn-outline-info" t-on-click="() => this.openRescheduleModal(act)">
+                                                            <i class="fa fa-calendar"/> Reschedule
+                                                        </button>
+                                                        <button class="btn btn-sm btn-success" t-on-click="() => this.openCompleteModal(act)">
+                                                            <i class="fa fa-check"/> Mark Done
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </t>
+                                </div>
+                            </t>
+                        </div>
+
+                        <!-- OVERDUE ACTIVITIES -->
+                        <div t-if="state.activeTab === 'overdue'">
+                            <t t-if="state.data.my_activities.overdue.length === 0">
+                                <div class="text-center py-4 text-muted">
+                                    <i class="fa fa-thumbs-up fa-2x mb-2 text-success"/><br/>
+                                    <strong>No overdue tasks!</strong> Great job keeping up with deadlines.
+                                </div>
+                            </t>
+                            <t t-else="">
+                                <div class="row g-3">
+                                    <t t-foreach="state.data.my_activities.overdue" t-as="act" t-key="act.id">
+                                        <div class="col-12 col-md-6 col-lg-4">
+                                            <div class="card shadow-sm border-0 border-start border-4 border-danger h-100">
+                                                <div class="card-body d-flex flex-column justify-content-between">
+                                                    <div>
+                                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                                            <span class="badge bg-danger"><i t-attf-class="fa {{act.activity_icon}} me-1"/> <t t-esc="act.activity_type"/></span>
+                                                            <span class="small text-danger fw-bold"><i class="fa fa-exclamation-triangle me-1"/> <t t-esc="act.date_deadline"/></span>
+                                                        </div>
+                                                        <h6 class="fw-bold text-dark mb-1">
+                                                            <a href="#" class="text-decoration-none text-dark" t-on-click.prevent="() => this.openRecord(act.res_model, act.res_id)">
+                                                                <t t-esc="act.res_name"/>
+                                                            </a>
+                                                        </h6>
+                                                        <p class="small text-danger fw-semibold mb-1"><t t-esc="act.summary"/></p>
+                                                        <p t-if="act.note" class="small text-muted mb-2 fst-italic"><t t-esc="act.note"/></p>
+                                                    </div>
+                                                    <div class="mt-3 pt-2 border-top d-flex justify-content-between align-items-center gap-1">
+                                                        <button class="btn btn-sm btn-outline-secondary" t-on-click="() => this.openRecord(act.res_model, act.res_id)">
+                                                            <i class="fa fa-external-link"/> Open
+                                                        </button>
+                                                        <button class="btn btn-sm btn-outline-info" t-on-click="() => this.openRescheduleModal(act)">
+                                                            <i class="fa fa-calendar"/> Reschedule
+                                                        </button>
+                                                        <button class="btn btn-sm btn-success" t-on-click="() => this.openCompleteModal(act)">
+                                                            <i class="fa fa-check"/> Mark Done
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </t>
+                                </div>
+                            </t>
+                        </div>
+
+                        <!-- UPCOMING ACTIVITIES -->
+                        <div t-if="state.activeTab === 'upcoming'">
+                            <t t-if="state.data.my_activities.upcoming.length === 0">
+                                <div class="text-center py-4 text-muted">
+                                    <i class="fa fa-info-circle fa-2x mb-2 text-info"/><br/>
+                                    No upcoming tasks scheduled for the next 7 days.
+                                </div>
+                            </t>
+                            <t t-else="">
+                                <div class="row g-3">
+                                    <t t-foreach="state.data.my_activities.upcoming" t-as="act" t-key="act.id">
+                                        <div class="col-12 col-md-6 col-lg-4">
+                                            <div class="card shadow-sm border-0 border-start border-4 border-info h-100">
+                                                <div class="card-body d-flex flex-column justify-content-between">
+                                                    <div>
+                                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                                            <span class="badge bg-info text-white"><i t-attf-class="fa {{act.activity_icon}} me-1"/> <t t-esc="act.activity_type"/></span>
+                                                            <span class="small text-muted"><i class="fa fa-calendar me-1"/> <t t-esc="act.date_deadline"/></span>
+                                                        </div>
+                                                        <h6 class="fw-bold text-dark mb-1">
+                                                            <a href="#" class="text-decoration-none text-dark" t-on-click.prevent="() => this.openRecord(act.res_model, act.res_id)">
+                                                                <t t-esc="act.res_name"/>
+                                                            </a>
+                                                        </h6>
+                                                        <p class="small text-primary fw-semibold mb-1"><t t-esc="act.summary"/></p>
+                                                        <p t-if="act.note" class="small text-muted mb-2 fst-italic"><t t-esc="act.note"/></p>
+                                                    </div>
+                                                    <div class="mt-3 pt-2 border-top d-flex justify-content-between align-items-center gap-1">
+                                                        <button class="btn btn-sm btn-outline-secondary" t-on-click="() => this.openRecord(act.res_model, act.res_id)">
+                                                            <i class="fa fa-external-link"/> Open
+                                                        </button>
+                                                        <button class="btn btn-sm btn-outline-info" t-on-click="() => this.openRescheduleModal(act)">
+                                                            <i class="fa fa-calendar"/> Reschedule
+                                                        </button>
+                                                        <button class="btn btn-sm btn-success" t-on-click="() => this.openCompleteModal(act)">
+                                                            <i class="fa fa-check"/> Mark Done
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </t>
+                                </div>
+                            </t>
+                        </div>
+
+                        <!-- UNASSIGNED ACTIVITIES -->
+                        <div t-if="state.activeTab === 'unassigned'">
+                            <t t-if="state.data.unassigned_activities.length === 0">
+                                <div class="text-center py-4 text-muted">
+                                    <i class="fa fa-check-circle-o fa-2x mb-2 text-success"/><br/>
+                                    <strong>No unassigned tasks!</strong> All active work has an assigned owner.
+                                </div>
+                            </t>
+                            <t t-else="">
+                                <div class="row g-3">
+                                    <t t-foreach="state.data.unassigned_activities" t-as="act" t-key="act.id">
+                                        <div class="col-12 col-md-6 col-lg-4">
+                                            <div class="card shadow-sm border-0 border-start border-4 border-secondary h-100">
+                                                <div class="card-body d-flex flex-column justify-content-between">
+                                                    <div>
+                                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                                            <span class="badge bg-secondary"><i t-attf-class="fa {{act.activity_icon}} me-1"/> <t t-esc="act.activity_type"/></span>
+                                                            <span class="small text-muted"><i class="fa fa-user-times me-1"/> Unassigned</span>
+                                                        </div>
+                                                        <h6 class="fw-bold text-dark mb-1">
+                                                            <a href="#" class="text-decoration-none text-dark" t-on-click.prevent="() => this.openRecord(act.res_model, act.res_id)">
+                                                                <t t-esc="act.res_name"/>
+                                                            </a>
+                                                        </h6>
+                                                        <p class="small text-dark fw-semibold mb-1"><t t-esc="act.summary"/></p>
+                                                    </div>
+                                                    <div class="mt-3 pt-2 border-top d-flex justify-content-between align-items-center gap-1">
+                                                        <button class="btn btn-sm btn-outline-secondary" t-on-click="() => this.openRecord(act.res_model, act.res_id)">
+                                                            <i class="fa fa-external-link"/> Open
+                                                        </button>
+                                                        <button class="btn btn-sm btn-primary" t-on-click="() => this.openReassignModal(act)">
+                                                            <i class="fa fa-user-plus"/> Assign Me/Staff
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </t>
+                                </div>
+                            </t>
                         </div>
                     </div>
+                </div>
+
+                <!-- TIER 2: ATTENTION REQUIRED (EXCEPTIONS & UNASSIGNED WORK) -->
+                <div class="row g-3 mb-4">
                     <div class="col-12 col-md-6 col-lg-3">
-                        <div class="card shadow-sm border-0 border-start border-4 border-success h-100 kpi-card" t-on-click="() => this.openInvoices([], 'Collections &amp; Invoices')">
+                        <div class="card shadow-sm border-0 border-start border-4 border-danger h-100 kpi-card" t-on-click="() => this.openInvoices([['amount_residual', '>', 0], ['move_type', '=', 'out_invoice']], 'Overdue Receivables (>7d)')">
                             <div class="card-body">
-                                <span class="text-muted small text-uppercase fw-bold">Today's Collections</span>
-                                <h3 class="mb-0 mt-2 fw-bold text-success">
-                                    <t t-esc="state.data.currency_symbol"/> <t t-esc="formatCurrency(state.data.kpis.today_collections)"/>
-                                </h3>
-                                <small class="text-muted">Cash &amp; Bank Inflow</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-6 col-lg-3">
-                        <div class="card shadow-sm border-0 border-start border-4 border-info h-100 kpi-card" t-on-click="() => this.openSales([], 'Monthly Sales')">
-                            <div class="card-body">
-                                <span class="text-muted small text-uppercase fw-bold">Monthly Sales</span>
-                                <h3 class="mb-0 mt-2 fw-bold text-info">
-                                    <t t-esc="state.data.currency_symbol"/> <t t-esc="formatCurrency(state.data.kpis.monthly_sales)"/>
-                                </h3>
-                                <small class="text-muted"><t t-esc="state.data.kpis.monthly_sales_count || 0"/> monthly bookings</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-6 col-lg-3">
-                        <div class="card shadow-sm border-0 border-start border-4 border-warning h-100 kpi-card">
-                            <div class="card-body">
-                                <span class="text-muted small text-uppercase fw-bold">Monthly Gross Profit</span>
-                                <h3 class="mb-0 mt-2 fw-bold text-warning">
-                                    <t t-esc="state.data.currency_symbol"/> <t t-esc="formatCurrency(state.data.kpis.monthly_gross_profit)"/>
-                                </h3>
-                                <small class="text-muted">Revenue minus Supplier Costs</small>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Financial Balance KPIs -->
-                    <div class="col-12 col-md-6 col-lg-3">
-                        <div class="card shadow-sm border-0 border-start border-4 border-danger h-100 kpi-card" t-on-click="() => this.openInvoices([['amount_residual', '>', 0], ['move_type', '=', 'out_invoice']], 'Total Receivables')">
-                            <div class="card-body">
-                                <span class="text-muted small text-uppercase fw-bold">Total Receivables</span>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="text-muted small text-uppercase fw-bold">Overdue Receivables (>7d)</span>
+                                    <span class="badge bg-danger rounded-pill"><t t-esc="state.data.attention_items.overdue_receivables_7d_count"/></span>
+                                </div>
                                 <h3 class="mb-0 mt-2 fw-bold text-danger">
-                                    <t t-esc="state.data.currency_symbol"/> <t t-esc="formatCurrency(state.data.kpis.total_receivables)"/>
+                                    <t t-esc="state.data.currency_symbol"/> <t t-esc="formatCurrency(state.data.attention_items.overdue_receivables_7d_total)"/>
                                 </h3>
-                                <small class="text-muted">Customer Outstanding</small>
+                                <small class="text-muted">High-risk customer debts</small>
                             </div>
                         </div>
                     </div>
                     <div class="col-12 col-md-6 col-lg-3">
-                        <div class="card shadow-sm border-0 border-start border-4 border-secondary h-100 kpi-card" t-on-click="() => this.openBills([['amount_residual', '>', 0], ['move_type', '=', 'in_invoice']], 'Total Payables')">
+                        <div class="card shadow-sm border-0 border-start border-4 border-warning h-100 kpi-card" t-on-click="() => this.openSales([['state', '=', 'draft']], 'Unconfirmed Sales (>3d)')">
                             <div class="card-body">
-                                <span class="text-muted small text-uppercase fw-bold">Total Payables</span>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="text-muted small text-uppercase fw-bold">Draft Sales (>3d)</span>
+                                    <span class="badge bg-warning text-dark rounded-pill"><t t-esc="state.data.attention_items.old_draft_sales_count"/></span>
+                                </div>
+                                <h3 class="mb-0 mt-2 fw-bold text-warning">
+                                    <t t-esc="state.data.attention_items.old_draft_sales_count"/> Drafts
+                                </h3>
+                                <small class="text-muted">Awaiting confirmation</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="card shadow-sm border-0 border-start border-4 border-info h-100 kpi-card" t-on-click="() => this.openExpenses([['state', '=', 'draft']], 'Pending Expenses')">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="text-muted small text-uppercase fw-bold">Draft Expenses</span>
+                                    <span class="badge bg-info rounded-pill"><t t-esc="state.data.attention_items.pending_expenses_count"/></span>
+                                </div>
+                                <h3 class="mb-0 mt-2 fw-bold text-info">
+                                    <t t-esc="state.data.attention_items.pending_expenses_count"/> Entries
+                                </h3>
+                                <small class="text-muted">Awaiting approval</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="card shadow-sm border-0 border-start border-4 border-secondary h-100 kpi-card" t-on-click="() => this.openBills([['amount_residual', '>', 0]], 'Unpaid Vendor Bills')">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="text-muted small text-uppercase fw-bold">Supplier Payables</span>
+                                </div>
                                 <h3 class="mb-0 mt-2 fw-bold text-secondary">
-                                    <t t-esc="state.data.currency_symbol"/> <t t-esc="formatCurrency(state.data.kpis.total_payables)"/>
+                                    <t t-esc="state.data.currency_symbol"/> <t t-esc="formatCurrency(state.data.attention_items.unpaid_bills_total)"/>
                                 </h3>
-                                <small class="text-muted">Supplier Balances</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-6 col-lg-3">
-                        <div class="card shadow-sm border-0 border-start border-4 border-primary h-100 kpi-card">
-                            <div class="card-body">
-                                <span class="text-muted small text-uppercase fw-bold">Cash Position</span>
-                                <h3 class="mb-0 mt-2 fw-bold text-dark">
-                                    <t t-esc="state.data.currency_symbol"/> <t t-esc="formatCurrency(state.data.kpis.cash_position)"/>
-                                </h3>
-                                <small class="text-muted">Cash in Hand / Drawer</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-6 col-lg-3">
-                        <div class="card shadow-sm border-0 border-start border-4 border-success h-100 kpi-card">
-                            <div class="card-body">
-                                <span class="text-muted small text-uppercase fw-bold">Bank Position</span>
-                                <h3 class="mb-0 mt-2 fw-bold text-dark">
-                                    <t t-esc="state.data.currency_symbol"/> <t t-esc="formatCurrency(state.data.kpis.bank_position)"/>
-                                </h3>
-                                <small class="text-muted">Bank Accounts Total</small>
+                                <small class="text-muted">Pending vendor bills</small>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- KPI GRID - OPERATIONS DIRECTOR VIEW -->
-                <div t-elif="state.data.role === 'operations'" class="row g-3 mb-4">
-                    <div class="col-12 col-md-6 col-lg-4">
-                        <div class="card shadow-sm border-0 border-start border-4 border-primary h-100 kpi-card" t-on-click="() => this.openSales([], 'Today Sales')">
-                            <div class="card-body">
-                                <span class="text-muted small text-uppercase fw-bold">Today's Sales</span>
-                                <h3 class="mb-0 mt-2 fw-bold text-dark">
-                                    <t t-esc="state.data.currency_symbol"/> <t t-esc="formatCurrency(state.data.kpis.today_sales)"/>
-                                </h3>
-                                <small class="text-muted"><t t-esc="state.data.kpis.today_sales_count || 0"/> bookings</small>
-                            </div>
-                        </div>
+                <!-- TIER 3: ROLE-SPECIFIC QUICK ACTIONS -->
+                <div class="card shadow-sm border-0 mb-4">
+                    <div class="card-header bg-white py-3 border-0">
+                        <h5 class="card-title mb-0 fw-bold text-dark">
+                            <i class="fa fa-bolt text-warning me-2"/> QUICK ACTIONS &amp; SHORTCUTS
+                        </h5>
                     </div>
-                    <div class="col-12 col-md-6 col-lg-4">
-                        <div class="card shadow-sm border-0 border-start border-4 border-success h-100 kpi-card">
-                            <div class="card-body">
-                                <span class="text-muted small text-uppercase fw-bold">Today's Collections</span>
-                                <h3 class="mb-0 mt-2 fw-bold text-success">
-                                    <t t-esc="state.data.currency_symbol"/> <t t-esc="formatCurrency(state.data.kpis.today_collections)"/>
-                                </h3>
-                                <small class="text-muted">Collected today</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-6 col-lg-4">
-                        <div class="card shadow-sm border-0 border-start border-4 border-warning h-100 kpi-card" t-on-click="() => this.openSales([['state', 'in', ['draft', 'confirmed', 'in_progress']]], 'Pending Transactions')">
-                            <div class="card-body">
-                                <span class="text-muted small text-uppercase fw-bold">Pending Transactions</span>
-                                <h3 class="mb-0 mt-2 fw-bold text-warning">
-                                    <t t-esc="state.data.kpis.pending_transactions_count"/>
-                                </h3>
-                                <small class="text-muted">Draft / Confirmed / In Progress</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-6 col-lg-6">
-                        <div class="card shadow-sm border-0 border-start border-4 border-danger h-100 kpi-card" t-on-click="() => this.openInvoices([['amount_residual', '>', 0]], 'Customer Balances')">
-                            <div class="card-body">
-                                <span class="text-muted small text-uppercase fw-bold">Customer Outstanding</span>
-                                <h3 class="mb-0 mt-2 fw-bold text-danger">
-                                    <t t-esc="state.data.currency_symbol"/> <t t-esc="formatCurrency(state.data.kpis.total_receivables)"/>
-                                </h3>
-                                <small class="text-muted">Total Customer Receivables</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-6 col-lg-6">
-                        <div class="card shadow-sm border-0 border-start border-4 border-secondary h-100 kpi-card" t-on-click="() => this.openBills([['amount_residual', '>', 0]], 'Supplier Payables')">
-                            <div class="card-body">
-                                <span class="text-muted small text-uppercase fw-bold">Supplier Payables</span>
-                                <h3 class="mb-0 mt-2 fw-bold text-secondary">
-                                    <t t-esc="state.data.currency_symbol"/> <t t-esc="formatCurrency(state.data.kpis.total_payables)"/>
-                                </h3>
-                                <small class="text-muted">Payable to Vendors</small>
-                            </div>
+                    <div class="card-body">
+                        <div class="d-flex flex-wrap gap-2">
+                            <button class="btn btn-outline-primary" t-on-click="() => this.openSales([], 'New Sale')">
+                                <i class="fa fa-plus-circle me-1"/> New Travel Sale
+                            </button>
+                            <button class="btn btn-outline-success" t-on-click="() => this.openInvoices([], 'Record Payment')">
+                                <i class="fa fa-money me-1"/> Register Payment
+                            </button>
+                            <button class="btn btn-outline-info" t-on-click="() => this.openExpenses([], 'New Expense')">
+                                <i class="fa fa-credit-card me-1"/> Record Expense
+                            </button>
+                            <button class="btn btn-outline-warning text-dark" t-on-click="() => this.openActivities([], 'Schedule Activity')">
+                                <i class="fa fa-calendar-plus-o me-1"/> Schedule Activity
+                            </button>
+                            <button class="btn btn-outline-dark" t-on-click="() => this.openInvoices([['amount_residual', '>', 0]], 'Customer Debtors')">
+                                <i class="fa fa-book me-1"/> Customer Ledger
+                            </button>
                         </div>
                     </div>
                 </div>
 
-                <!-- KPI GRID - SALES DIRECTOR VIEW -->
-                <div t-elif="state.data.role === 'sales'" class="row g-3 mb-4">
-                    <div class="col-12 col-md-6 col-lg-3">
-                        <div class="card shadow-sm border-0 border-start border-4 border-primary h-100 kpi-card" t-on-click="() => this.openSales([], 'Today Sales')">
-                            <div class="card-body">
-                                <span class="text-muted small text-uppercase fw-bold">Today's Sales</span>
-                                <h3 class="mb-0 mt-2 fw-bold text-dark">
-                                    <t t-esc="state.data.currency_symbol"/> <t t-esc="formatCurrency(state.data.kpis.today_sales)"/>
-                                </h3>
-                                <small class="text-muted">Total Team Volume</small>
-                            </div>
-                        </div>
+                <!-- TIER 4: TEAM WORKLOAD MATRIX (MANAGER & CEO VIEW) -->
+                <div t-if="state.data.role === 'ceo' || state.data.role === 'operations'" class="card shadow-sm border-0 mb-4">
+                    <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0 fw-bold text-dark">
+                            <i class="fa fa-users text-primary me-2"/> TEAM WORKLOAD MATRIX
+                        </h5>
+                        <span class="badge bg-light text-dark border">Real-time Task Allocation</span>
                     </div>
-                    <div class="col-12 col-md-6 col-lg-3">
-                        <div class="card shadow-sm border-0 border-start border-4 border-info h-100 kpi-card">
-                            <div class="card-body">
-                                <span class="text-muted small text-uppercase fw-bold">Monthly Sales</span>
-                                <h3 class="mb-0 mt-2 fw-bold text-info">
-                                    <t t-esc="state.data.currency_symbol"/> <t t-esc="formatCurrency(state.data.kpis.monthly_sales)"/>
-                                </h3>
-                                <small class="text-muted">Month to date</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-6 col-lg-3">
-                        <div class="card shadow-sm border-0 border-start border-4 border-success h-100 kpi-card">
-                            <div class="card-body">
-                                <span class="text-muted small text-uppercase fw-bold">My Monthly Sales</span>
-                                <h3 class="mb-0 mt-2 fw-bold text-success">
-                                    <t t-esc="state.data.currency_symbol"/> <t t-esc="formatCurrency(state.data.kpis.my_month_sales)"/>
-                                </h3>
-                                <small class="text-muted">Personal Volume</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-6 col-lg-3">
-                        <div class="card shadow-sm border-0 border-start border-4 border-danger h-100 kpi-card" t-on-click="() => this.openInvoices([['amount_residual', '>', 0]], 'Customer Outstanding')">
-                            <div class="card-body">
-                                <span class="text-muted small text-uppercase fw-bold">Customer Outstanding</span>
-                                <h3 class="mb-0 mt-2 fw-bold text-danger">
-                                    <t t-esc="state.data.currency_symbol"/> <t t-esc="formatCurrency(state.data.kpis.total_receivables)"/>
-                                </h3>
-                                <small class="text-muted">Pending Collections</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- KPI GRID - ASSISTANT OPS & MARKETING VIEW -->
-                <div t-else="" class="row g-3 mb-4">
-                    <div class="col-12 col-md-6 col-lg-3">
-                        <div class="card shadow-sm border-0 border-start border-4 border-primary h-100 kpi-card" t-on-click="() => this.openSales([], 'Today Sales')">
-                            <div class="card-body">
-                                <span class="text-muted small text-uppercase fw-bold">Today's Sales</span>
-                                <h3 class="mb-0 mt-2 fw-bold text-dark">
-                                    <t t-esc="state.data.currency_symbol"/> <t t-esc="formatCurrency(state.data.kpis.today_sales)"/>
-                                </h3>
-                                <small class="text-muted">Team today</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-6 col-lg-3">
-                        <div class="card shadow-sm border-0 border-start border-4 border-success h-100 kpi-card">
-                            <div class="card-body">
-                                <span class="text-muted small text-uppercase fw-bold">Today's Collections</span>
-                                <h3 class="mb-0 mt-2 fw-bold text-success">
-                                    <t t-esc="state.data.currency_symbol"/> <t t-esc="formatCurrency(state.data.kpis.today_collections)"/>
-                                </h3>
-                                <small class="text-muted">Collections</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-6 col-lg-3">
-                        <div class="card shadow-sm border-0 border-start border-4 border-warning h-100 kpi-card" t-on-click="() => this.openSales([['state', 'in', ['draft', 'confirmed', 'in_progress']]], 'Pending Operations')">
-                            <div class="card-body">
-                                <span class="text-muted small text-uppercase fw-bold">Pending Operations</span>
-                                <h3 class="mb-0 mt-2 fw-bold text-warning">
-                                    <t t-esc="state.data.kpis.pending_transactions_count"/>
-                                </h3>
-                                <small class="text-muted">Active Bookings</small>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-6 col-lg-3">
-                        <div class="card shadow-sm border-0 border-start border-4 border-info h-100 kpi-card">
-                            <div class="card-body">
-                                <span class="text-muted small text-uppercase fw-bold">My Monthly Sales</span>
-                                <h3 class="mb-0 mt-2 fw-bold text-info">
-                                    <t t-esc="state.data.currency_symbol"/> <t t-esc="formatCurrency(state.data.kpis.my_month_sales)"/>
-                                </h3>
-                                <small class="text-muted">My Sales</small>
-                            </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th class="ps-3">Staff Member</th>
+                                        <th class="text-center">Due Today</th>
+                                        <th class="text-center">Overdue</th>
+                                        <th class="text-center">Upcoming</th>
+                                        <th class="text-center">Total Open</th>
+                                        <th class="text-end pe-3">Workload Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-if="state.data.team_workload.length === 0">
+                                        <tr>
+                                            <td colspan="6" class="text-center text-muted py-4 small">No staff workload data available.</td>
+                                        </tr>
+                                    </t>
+                                    <tr t-foreach="state.data.team_workload" t-as="u" t-key="u.user_id">
+                                        <td class="ps-3 fw-bold text-dark">
+                                            <i class="fa fa-user-circle-o me-2 text-muted"/> <t t-esc="u.user_name"/>
+                                        </td>
+                                        <td class="text-center fw-semibold text-warning"><t t-esc="u.today_count"/></td>
+                                        <td class="text-center fw-bold text-danger"><t t-esc="u.overdue_count"/></td>
+                                        <td class="text-center text-info"><t t-esc="u.upcoming_count"/></td>
+                                        <td class="text-center fw-bold"><t t-esc="u.total_open"/></td>
+                                        <td class="text-end pe-3">
+                                            <span t-attf-class="badge rounded-pill bg-{{ u.status === 'ok' ? 'success' : u.status === 'attention' ? 'warning' : 'danger' }}">
+                                                <t t-esc="u.status_label"/>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
 
-                <!-- ANALYTICS SECTION -->
+                <!-- TIER 5: PERFORMANCE & FINANCIAL ANALYTICS -->
                 <div class="row g-4 mb-4">
                     <!-- Sales by Service -->
                     <div class="col-12 col-lg-6">
@@ -311,7 +410,7 @@
                         </div>
                     </div>
 
-                    <!-- Sales by Staff / Performance -->
+                    <!-- Salesperson Performance -->
                     <div class="col-12 col-lg-6">
                         <div class="card shadow-sm border-0 h-100">
                             <div class="card-header bg-white py-3 border-0">
@@ -341,88 +440,122 @@
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- BALANCES & RECENT TRANSACTIONS -->
-                <div class="row g-4 mb-4">
-                    <!-- Top Outstanding Customers -->
-                    <div class="col-12 col-lg-6">
-                        <div class="card shadow-sm border-0 h-100">
-                            <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center">
-                                <h5 class="card-title mb-0 fw-bold text-dark">
-                                    <i class="fa fa-exclamation-circle text-danger me-2"/> Top Outstanding Customers
-                                </h5>
-                                <button class="btn btn-sm btn-link p-0 text-decoration-none" t-on-click="() => this.openInvoices([['amount_residual', '>', 0]], 'All Debtors')">View All</button>
+            <!-- MODAL: MARK ACTIVITY DONE (OUTCOME CAPTURE) -->
+            <div t-if="state.activeModal === 'complete'" class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header bg-success text-white">
+                            <h5 class="modal-title fw-bold"><i class="fa fa-check-square-o me-2"/> Complete Activity</h5>
+                            <button type="button" class="btn-close btn-close-white" t-on-click="closeModal"/>
+                        </div>
+                        <div class="modal-body">
+                            <p class="fw-semibold text-dark mb-1"><t t-esc="state.selectedActivity.res_name"/></p>
+                            <p class="small text-muted mb-3"><t t-esc="state.selectedActivity.summary"/></p>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-bold small">Activity Outcome</label>
+                                <select class="form-select" t-model="state.completeForm.outcome">
+                                    <option value="Successful">Successful / Completed</option>
+                                    <option value="Customer Unavailable">Customer Unavailable</option>
+                                    <option value="Customer Requested Callback">Customer Requested Callback</option>
+                                    <option value="Payment Promised">Payment Promised</option>
+                                    <option value="No Response">No Response</option>
+                                    <option value="Other">Other / General Note</option>
+                                </select>
                             </div>
-                            <div class="card-body p-0">
-                                <div class="table-responsive">
-                                    <table class="table table-hover align-middle mb-0">
-                                        <thead class="table-light">
-                                            <tr>
-                                                <th class="ps-3">Customer</th>
-                                                <th class="text-end pe-3">Outstanding Due</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <t t-if="state.data.outstanding_customers.length === 0">
-                                                <tr>
-                                                    <td colspan="2" class="text-center text-muted py-4 small">No outstanding customer balances!</td>
-                                                </tr>
-                                            </t>
-                                            <tr t-foreach="state.data.outstanding_customers" t-as="c" t-key="c.id">
-                                                <td class="ps-3 fw-semibold text-dark"><t t-esc="c.name"/></td>
-                                                <td class="text-end pe-3 text-danger fw-bold">
-                                                    <t t-esc="state.data.currency_symbol"/> <t t-esc="formatCurrency(c.outstanding)"/>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-bold small">Feedback / Result Notes</label>
+                                <textarea class="form-control" rows="3" placeholder="Enter call outcome or resolution notes..." t-model="state.completeForm.feedback"/>
+                            </div>
+
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="checkbox" id="checkScheduleNext" t-model="state.completeForm.scheduleNext"/>
+                                <label class="form-check-label fw-bold small" for="checkScheduleNext">
+                                    Schedule a follow-up activity
+                                </label>
+                            </div>
+
+                            <div t-if="state.completeForm.scheduleNext" class="p-3 bg-light rounded border mb-2">
+                                <div class="mb-2">
+                                    <label class="form-label small fw-bold">Next Activity Type</label>
+                                    <select class="form-select form-select-sm" t-model="state.completeForm.nextTypeId">
+                                        <option t-foreach="state.data.activity_types" t-as="type" t-key="type.id" t-att-value="type.id">
+                                            <t t-esc="type.name"/>
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="mb-2">
+                                    <label class="form-label small fw-bold">Follow-up Deadline</label>
+                                    <input type="date" class="form-control form-control-sm" t-model="state.completeForm.nextDeadline"/>
+                                </div>
+                                <div class="mb-0">
+                                    <label class="form-label small fw-bold">Follow-up Summary</label>
+                                    <input type="text" class="form-control form-control-sm" placeholder="e.g. Call back for payment confirmation" t-model="state.completeForm.nextSummary"/>
                                 </div>
                             </div>
                         </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary btn-sm" t-on-click="closeModal">Cancel</button>
+                            <button type="button" class="btn btn-success btn-sm" t-on-click="submitCompleteActivity">Complete Activity</button>
+                        </div>
                     </div>
+                </div>
+            </div>
 
-                    <!-- Recent Transactions -->
-                    <div class="col-12 col-lg-6">
-                        <div class="card shadow-sm border-0 h-100">
-                            <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center">
-                                <h5 class="card-title mb-0 fw-bold text-dark">
-                                    <i class="fa fa-history text-info me-2"/> Recent Sales Transactions
-                                </h5>
-                                <button class="btn btn-sm btn-link p-0 text-decoration-none" t-on-click="() => this.openSales([], 'All Sales')">View All</button>
+            <!-- MODAL: RESCHEDULE ACTIVITY -->
+            <div t-if="state.activeModal === 'reschedule'" class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+                <div class="modal-dialog modal-dialog-centered modal-sm">
+                    <div class="modal-content">
+                        <div class="modal-header bg-info text-white">
+                            <h5 class="modal-title fw-bold"><i class="fa fa-calendar me-2"/> Reschedule Activity</h5>
+                            <button type="button" class="btn-close btn-close-white" t-on-click="closeModal"/>
+                        </div>
+                        <div class="modal-body">
+                            <p class="fw-semibold text-dark small mb-1"><t t-esc="state.selectedActivity.res_name"/></p>
+                            <p class="small text-muted mb-3"><t t-esc="state.selectedActivity.summary"/></p>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold small">New Deadline Date</label>
+                                <input type="date" class="form-control" t-model="state.rescheduleForm.newDate"/>
                             </div>
-                            <div class="card-body p-0">
-                                <div class="table-responsive">
-                                    <table class="table table-hover align-middle mb-0">
-                                        <thead class="table-light">
-                                            <tr>
-                                                <th class="ps-3">Ref</th>
-                                                <th>Customer</th>
-                                                <th>Amount</th>
-                                                <th class="text-end pe-3">Status</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <t t-if="state.data.recent_sales.length === 0">
-                                                <tr>
-                                                    <td colspan="4" class="text-center text-muted py-4 small">No sales recorded yet.</td>
-                                                </tr>
-                                            </t>
-                                            <tr t-foreach="state.data.recent_sales" t-as="s" t-key="s.id" role="button" t-on-click="() => this.openSale(s.id)">
-                                                <td class="ps-3 fw-bold text-primary"><t t-esc="s.name"/></td>
-                                                <td><t t-esc="s.customer"/></td>
-                                                <td class="fw-semibold">
-                                                    <t t-esc="state.data.currency_symbol"/> <t t-esc="formatCurrency(s.amount)"/>
-                                                </td>
-                                                <td class="text-end pe-3">
-                                                    <span t-attf-class="badge rounded-pill bg-{{ s.state === 'completed' ? 'success' : s.state === 'confirmed' ? 'primary' : s.state === 'in_progress' ? 'info' : 'secondary' }}">
-                                                        <t t-esc="s.state"/>
-                                                    </span>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary btn-sm" t-on-click="closeModal">Cancel</button>
+                            <button type="button" class="btn btn-info text-white btn-sm" t-on-click="submitRescheduleActivity">Save Reschedule</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MODAL: REASSIGN ACTIVITY (MANAGER VIEW) -->
+            <div t-if="state.activeModal === 'reassign'" class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header bg-primary text-white">
+                            <h5 class="modal-title fw-bold"><i class="fa fa-user-plus me-2"/> Reassign Activity Owner</h5>
+                            <button type="button" class="btn-close btn-close-white" t-on-click="closeModal"/>
+                        </div>
+                        <div class="modal-body">
+                            <p class="fw-semibold text-dark small mb-1"><t t-esc="state.selectedActivity.res_name"/></p>
+                            <p class="small text-muted mb-3"><t t-esc="state.selectedActivity.summary"/></p>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold small">Assign To Employee</label>
+                                <select class="form-select" t-model="state.reassignForm.newUserId">
+                                    <option t-foreach="state.data.team_workload" t-as="u" t-key="u.user_id" t-att-value="u.user_id">
+                                        <t t-esc="u.user_name"/>
+                                    </option>
+                                </select>
                             </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold small">Deadline Date</label>
+                                <input type="date" class="form-control" t-model="state.reassignForm.newDate"/>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary btn-sm" t-on-click="closeModal">Cancel</button>
+                            <button type="button" class="btn btn-primary btn-sm" t-on-click="submitReassignActivity">Save Reassignment</button>
                         </div>
                     </div>
                 </div>
